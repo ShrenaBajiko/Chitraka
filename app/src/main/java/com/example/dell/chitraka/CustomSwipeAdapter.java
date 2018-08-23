@@ -10,16 +10,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class CustomSwipeAdapter extends PagerAdapter
-{
-    private int[] image_resource={R.drawable.birds,R.drawable.cap,R.drawable.chii};
+public class CustomSwipeAdapter extends PagerAdapter {
+    private int[] image_resource = {R.drawable.birds, R.drawable.cap, R.drawable.chii};
     private Context con;
     private LayoutInflater layoutInflater;
 
-    public CustomSwipeAdapter(Context con)
-    {
-        this.con=con;
+    public CustomSwipeAdapter(Context con) {
+        this.con = con;
     }
+
     @Override
     public int getCount() {
         return image_resource.length;
@@ -27,22 +26,23 @@ public class CustomSwipeAdapter extends PagerAdapter
 
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object o) {
-        return (view==(LinearLayout)o);
+        return (view == (LinearLayout) o);
     }
+
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        layoutInflater=(LayoutInflater) con.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View item_view=layoutInflater.inflate(R.layout.swipe_layout,container,false);
-        ImageView imageView=(ImageView) item_view.findViewById(R.id.image_view);
-        TextView textView=(TextView) item_view.findViewById(R.id.image_count);
+        layoutInflater = (LayoutInflater) con.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View item_view = layoutInflater.inflate(R.layout.swipe_layout, container, false);
+        ImageView imageView = (ImageView) item_view.findViewById(R.id.image_view);
+        TextView textView = (TextView) item_view.findViewById(R.id.image_count);
         imageView.setImageResource(image_resource[position]);
-        textView.setText("Image : "+position);
+        textView.setText("Image : " + position);
         container.addView(item_view);
         return item_view;
     }
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        container.removeView((LinearLayout)object);
+        container.removeView((LinearLayout) object);
 
     }
 }

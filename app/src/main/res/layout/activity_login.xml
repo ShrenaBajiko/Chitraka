@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Login">
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="E-MAIL"
+        android:padding="@dimen/_6sdp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:fontFamily="@font/avenirltstd_roman"
+        android:layout_marginLeft="@dimen/_16sdp"
+        android:layout_marginRight="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_16sdp"/>
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_below="@id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="PASSWORD"
+        android:inputType="textPassword"
+        android:fontFamily="@font/avenirltstd_roman"
+        android:padding="@dimen/_6sdp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:layout_marginLeft="@dimen/_16sdp"
+        android:layout_marginRight="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_16sdp"/>
+
+    <TextView
+        android:id="@+id/login"
+        android:layout_below="@id/password"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="LOGIN"
+        android:fontFamily="@font/avenirltstd_roman"
+        android:background="@drawable/edittext_background"
+        android:padding="@dimen/_12sdp"
+        android:textSize="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:layout_marginLeft="@dimen/_16sdp"
+        android:layout_marginRight="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_16sdp"/>
+
+
+</RelativeLayout>

@@ -9,6 +9,6 @@
     android:layout_height="match_parent"
     android:layout_centerInParent="true"
     android:textAlignment="center"
-    android:background="@drawable/marker"/>
+    android:background="@mipmap/icon"/>
 
 </RelativeLayout>

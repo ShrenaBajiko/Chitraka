@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "394105096295",
+    "firebase_url": "https://chitraka-295b7.firebaseio.com",
+    "project_id": "chitraka-295b7",
+    "storage_bucket": "chitraka-295b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394105096295:android:46aed1f6dbe7a8f1",
+        "android_client_info": {
+          "package_name": "com.example.dell.chitraka"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "394105096295-c3h4tlgovur1itb1f66fg1doqcc3pl0e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVLs-m8cg-31hsszMXm19NGmFmCBav9zM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

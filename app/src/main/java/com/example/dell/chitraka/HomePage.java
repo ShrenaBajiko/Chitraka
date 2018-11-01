@@ -1,5 +1,6 @@
 package com.example.dell.chitraka;
 
+import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,8 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
     private ViewPagerAdapter viewPagerAdapter;
     private LinearLayout home, profile, contest,upload,notification;
     private TextView hometv, profiletv, contesttv,uploadtv,notificationtv;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

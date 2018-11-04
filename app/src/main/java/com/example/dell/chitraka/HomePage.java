@@ -68,6 +68,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
                 changecolor(0);
                 break;
             case R.id.contest:
+
                 changecolor(1);
                 break;
             case R.id.upload:

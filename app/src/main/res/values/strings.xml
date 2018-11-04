@@ -2,4 +2,8 @@
     <string name="app_name">Chitraka</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="go_to_login">Go To Login</string>
+    <string name="title_activity_upload_main">uploadMainActivity</string>
+    <string name="cancel">Cancel</string>
+    <string name="photo_library">Photo Library</string>
+    <string name="take_photo">Take Photo</string>
 </resources>

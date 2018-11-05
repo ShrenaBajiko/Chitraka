@@ -19,8 +19,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/avenirltstd_roman"
             android:padding="@dimen/_8sdp"
-            android:text="@string/take_photo"
-
+            android:text="Camera"
             android:textSize="@dimen/_16sdp" />
 
 
@@ -45,7 +44,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/avenirltstd_roman"
             android:padding="@dimen/_8sdp"
-            android:text="@string/photo_library"
+            android:text="Gallery"
 
             android:textSize="@dimen/_16sdp" />
 

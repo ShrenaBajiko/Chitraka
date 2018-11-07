@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".CreateAccount">
+    tools:context=".CreateAccount"
+    >
+
     <EditText
         android:id="@+id/username"
         android:layout_width="match_parent"
@@ -61,6 +63,19 @@
         android:fontFamily="@font/avenirltstd_roman"
         android:padding="@dimen/_16sdp"
         android:text="REGISTER"
+        android:textStyle="bold"
         android:textAlignment="center"
         android:textSize="@dimen/_15sdp" />
+
+    <TextView
+        android:id="@+id/already"
+        android:layout_width="374dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_16sdp"
+        android:text="Already Registered?  Go to login"
+        android:textSize="@dimen/_16sdp"
+        android:fontFamily="@font/avenirltstd_roman"/>
+
+
+
 </LinearLayout>

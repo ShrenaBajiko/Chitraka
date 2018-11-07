@@ -44,4 +44,6 @@
         android:textColor="@color/white"
         android:textSize="@dimen/_16sdp"
         android:visibility="visible" />
+
+
 </RelativeLayout>

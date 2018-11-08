@@ -4,20 +4,27 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,18 +42,20 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static android.app.Activity.RESULT_OK;
 
-public class profilefragment extends Fragment {
+public class profilefragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     private static final int REQUEST_CAMERA = 112;
     private static final int SELECT_FILE = 122;
-    Uri imageHoldUri = null;
+    private  Uri imageHoldUri;
 
     TextView name,address,memo;
     Button logout;
     Button save;
-    ImageView userImageProfileView;
+    CircleImageView userImageProfileView;
     TextView welcome;
 
     FirebaseAuth mAuth;
@@ -63,13 +72,20 @@ public class profilefragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.profilefragment,null,false);
 
+        Spinner spinner=view.findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(getActivity(),R.array.Gender,android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+
         name=(TextView)view.findViewById(R.id.name);
         address=(TextView)view.findViewById(R.id.address);
         memo=(TextView) view.findViewById(R.id.memo);
-        userImageProfileView=(ImageView)view.findViewById(R.id.profilepic);
+        userImageProfileView=(CircleImageView)view.findViewById(R.id.profilepic);
         logout=(Button)view.findViewById(R.id.logout);
         save=(Button) view.findViewById(R.id.save);
         welcome=(TextView)view.findViewById(R.id.textViewUserEmail) ;
+
 
 
 
@@ -112,7 +128,8 @@ public class profilefragment extends Fragment {
             @Override
             public void onClick(View v)
             {
-               saveUserProfile();
+
+                saveUserProfile();
 
             }
         });
@@ -135,57 +152,60 @@ public class profilefragment extends Fragment {
 
         final String Name,Memo,Address;
 
-       Name=name.getText().toString().trim();
-       Memo=memo.getText().toString().trim();
-       Address=address.getText().toString().trim();
+        Name=name.getText().toString().trim();
+        Memo=memo.getText().toString().trim();
+        Address=address.getText().toString().trim();
 
-       if(!TextUtils.isEmpty(Name) && !TextUtils.isEmpty(Memo) && !TextUtils.isEmpty(Address))
-       {
-           if(imageHoldUri != null)
-           {
+        if(!TextUtils.isEmpty(Name) && !TextUtils.isEmpty(Memo) && !TextUtils.isEmpty(Address))
+        {
+            if(imageHoldUri != null)
+            {
 
-               progressDialog.setTitle("SAVING PROFILE");
-               progressDialog.setMessage("PLEASE WAIT......");
-               progressDialog.show();
-
-
-               StorageReference mChildStorage=mStorageRef.child("User_Profile").child(imageHoldUri.getLastPathSegment());
-               String profilePicUrl=imageHoldUri.getLastPathSegment();
-
-               mChildStorage.putFile(imageHoldUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                   @Override
-                   public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-                   {
-
-                       final Task<Uri> imageUrl=taskSnapshot.getMetadata().getReference().getDownloadUrl();
-
-                       mUserDatabase.child("Username").setValue(Name);
-                       mUserDatabase.child("Memo").setValue(Memo);
-                       mUserDatabase.child("Address").setValue(Address);
-                       mUserDatabase.child("userid").setValue(mAuth.getCurrentUser().getUid());
-                       mUserDatabase.child("Imageurl").setValue(imageUrl.toString());
+                progressDialog.setTitle("SAVING PROFILE");
+                progressDialog.setMessage("PLEASE WAIT......");
+                progressDialog.show();
 
 
-                       progressDialog.dismiss();
+                StorageReference mChildStorage=mStorageRef.child("User_Profile").child(imageHoldUri.getLastPathSegment());
+                String profilePicUrl=imageHoldUri.getLastPathSegment();
 
-                       getActivity().finish();
-                       Intent moveToHome=new Intent(getActivity(),HomePage.class);
-                       moveToHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                       startActivity(moveToHome);
+                mChildStorage.putFile(imageHoldUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                    {
 
-                   }
-               });
+                        final Task<Uri> imageUrl=taskSnapshot.getMetadata().getReference().getDownloadUrl();
 
-           }else
-           {
-               Toast.makeText(getActivity(),"Please select an image",Toast.LENGTH_LONG).show();
-           }
-       }
-       else
-       {
-           Toast.makeText(getActivity(),"Fields cannot be empty",Toast.LENGTH_LONG).show();
-       }
+                        mUserDatabase.child("Username").setValue(Name);
+                        mUserDatabase.child("Memo").setValue(Memo);
+                        mUserDatabase.child("Address").setValue(Address);
+                        mUserDatabase.child("userid").setValue(mAuth.getCurrentUser().getUid());
+                        mUserDatabase.child("Imageurl").setValue(imageUrl.toString());
+
+
+                        progressDialog.dismiss();
+
+                        getActivity().finish();
+                        Intent moveToHome=new Intent(getActivity(),HomePage.class);
+                        moveToHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(moveToHome);
+
+                    }
+                });
+
+            }
+            else
+            {
+                Toast.makeText(getActivity(),"Please select an image",Toast.LENGTH_LONG).show();
+            }
+        }
+        else
+        {
+            Toast.makeText(getActivity(),"Fields cannot be empty",Toast.LENGTH_LONG).show();
+        }
     }
+
+
 
     private void profilePicSelection()
     {
@@ -217,6 +237,7 @@ public class profilefragment extends Fragment {
         //CHOOSE CAMERA
         Log.d("gola", "entered here");
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.setType("image/*");
         startActivityForResult(intent, REQUEST_CAMERA);
     }
 
@@ -238,6 +259,7 @@ public class profilefragment extends Fragment {
         if(requestCode == SELECT_FILE && resultCode == RESULT_OK)
         {
             Uri imageUri = data.getData();
+            userImageProfileView.setImageURI(imageUri);
 
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
@@ -248,6 +270,7 @@ public class profilefragment extends Fragment {
             //SAVE URI FROM CAMERA
 
             Uri imageUri = data.getData();
+            userImageProfileView.setImageURI(imageUri);
 
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
@@ -271,4 +294,14 @@ public class profilefragment extends Fragment {
 
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+    {
+        String text=parent.getItemAtPosition(position).toString();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

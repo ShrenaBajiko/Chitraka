@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.dell.chitraka.profilefragment"
+    android:background="@drawable/f24b4a7bf9f24d1ba5f899339e6949f3"
+
     >
-
-
 
 
     <LinearLayout
@@ -25,21 +25,21 @@
             android:id="@+id/textViewUserEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_60sdp"
             android:fontFamily="@font/avenirltstd_roman"
             android:padding="10dp"
             android:text="Add your Profile here"
             android:textSize="@dimen/_16sdp"
-            android:layout_marginHorizontal="@dimen/_60sdp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profilepic"
             android:layout_width="138dp"
             android:layout_height="134dp"
             android:layout_marginHorizontal="@dimen/_80sdp"
             android:src="@drawable/avatar"
-            />
 
+            />
 
 
         <EditText
@@ -66,6 +66,14 @@
             android:hint="Address"
             android:textSize="@dimen/_16sdp" />
 
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="206dp"
+            android:layout_height="57dp"
+            />
+
+
         <Button
             android:id="@+id/save"
             android:layout_width="wrap_content"
@@ -73,7 +81,8 @@
             android:layout_gravity="center"
             android:background="@drawable/edittext_background"
             android:fontFamily="@font/avenirltstd_roman"
-            android:text="Save Information" />
+            android:text="Save Information"
+            android:layout_marginTop="@dimen/_80sdp"/>
 
         <Button
             android:id="@+id/logout"
@@ -88,4 +97,4 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+</ScrollView>

@@ -2,4 +2,11 @@
     <string name="app_name">Chitraka</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="go_to_login">Go To Login</string>
+
+    <string-array name="Gender">
+        <item>Select your gender</item>
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
 </resources>

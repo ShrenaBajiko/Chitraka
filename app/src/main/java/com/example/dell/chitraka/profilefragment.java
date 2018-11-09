@@ -237,7 +237,6 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         //CHOOSE CAMERA
         Log.d("gola", "entered here");
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.setType("image/*");
         startActivityForResult(intent, REQUEST_CAMERA);
     }
 
@@ -285,7 +284,6 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 imageHoldUri = result.getUri();
-
                 userImageProfileView.setImageURI(imageHoldUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();

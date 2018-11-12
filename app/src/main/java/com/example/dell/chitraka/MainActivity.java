@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+import android.support.v4.app.Fragment;
 
 import com.rd.PageIndicatorView;
 import com.rd.animation.type.AnimationType;
@@ -65,7 +66,9 @@ public class MainActivity extends AppCompatActivity {
         });
         goToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
+
                 startActivity(new Intent(MainActivity.this, Front.class));
             }
         });

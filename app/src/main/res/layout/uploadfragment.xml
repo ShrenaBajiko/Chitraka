@@ -1,57 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/image_picker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="12dp"
-        android:background="@color/lightgreen"
-        android:padding="@dimen/_5sdp"
-        android:text="Image Picker"
-        android:textAlignment="center"
-        android:textSize="@dimen/_16sdp" />
-
-    <TextView
-        android:id="@+id/upload_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/lightgreen"
-        android:padding="@dimen/_5sdp"
-        android:text="Upload Image"
-        android:textAlignment="center"
-        android:textSize="@dimen/_16sdp" />
-
-    <ImageView
-        android:id="@+id/image_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/description"
-
-        android:layout_marginBottom="60dp"
-        android:layout_marginTop="70dp" />
-
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="53dp" />
-
-    <EditText
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="103dp"
-        android:hint="write descrition"
-        android:textSize="20dp" />
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

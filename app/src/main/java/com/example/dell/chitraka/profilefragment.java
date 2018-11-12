@@ -281,12 +281,13 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
 
         //image crop library code
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+           CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 imageHoldUri = result.getUri();
                 userImageProfileView.setImageURI(imageHoldUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+
             }
         }
 

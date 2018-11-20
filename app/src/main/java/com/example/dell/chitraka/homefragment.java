@@ -27,35 +27,34 @@ public class homefragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.homefragment,null,false);
+        View view = inflater.inflate(R.layout.homefragment, null, false);
 
 
-
-
-        android.support.v7.app.ActionBar actionBar=((AppCompatActivity)getActivity()).getSupportActionBar();
+        android.support.v7.app.ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle("Post list");
 
 
-        mRecyclerView=view.findViewById(R.id.recyclerView);
+        mRecyclerView = view.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 
-        firebaseDatabase=FirebaseDatabase.getInstance();
-        mRef=firebaseDatabase.getReference("uploads");
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        mRef = firebaseDatabase.getReference("uploads");
 
 
         return view;
     }
 
-    @Override
+
+   @Override
     public void onStart() {
         super.onStart();
-        FirebaseRecyclerAdapter<Model, ViewHolder> firebaseRecyclerAdapter=
-                new FirebaseRecyclerAdapter<Model, ViewHolder>(Model.class,R.layout.row,ViewHolder.class,mRef) {
+        FirebaseRecyclerAdapter<Upload, ViewHolder> firebaseRecyclerAdapter=
+                new FirebaseRecyclerAdapter<Upload, ViewHolder>(Upload.class,R.layout.row,ViewHolder.class,mRef) {
                     @Override
-                    protected void populateViewHolder(ViewHolder viewHolder, Model model, int position) {
+                    protected void populateViewHolder(ViewHolder viewHolder, Upload model, int position) {
 
                         viewHolder.setDetails(getActivity().getApplicationContext(),model.getDet(),model.getImageUrl());
                     }

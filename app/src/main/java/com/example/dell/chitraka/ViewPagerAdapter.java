@@ -21,7 +21,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
                 return new upload_fragment();
             case 3:
                 return new notification_fragment();
-            case 4:
+           case 4:
                 return new profilefragment();
         }
         return null;

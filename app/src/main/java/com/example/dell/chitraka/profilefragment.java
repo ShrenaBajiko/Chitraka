@@ -39,8 +39,9 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
+
+/*import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;*/
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -57,6 +58,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     Button save;
     CircleImageView userImageProfileView;
     TextView welcome;
+    Button showupload;
 
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
@@ -85,6 +87,20 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         logout=(Button)view.findViewById(R.id.logout);
         save=(Button) view.findViewById(R.id.save);
         welcome=(TextView)view.findViewById(R.id.textViewUserEmail) ;
+        showupload=(Button) view.findViewById(R.id.text_view_show_upload);
+
+        showupload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openImageActivity();
+            }
+
+            private void openImageActivity() {
+                Intent intent = new Intent(getActivity(),ImageActivity.class);
+                startActivity(intent);
+
+            }
+        });
 
 
 
@@ -237,6 +253,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         //CHOOSE CAMERA
         Log.d("gola", "entered here");
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.setType("image/*");
         startActivityForResult(intent, REQUEST_CAMERA);
     }
 
@@ -255,7 +272,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
 
 
         //SAVE URI FROM GALLERY
-        if(requestCode == SELECT_FILE && resultCode == RESULT_OK)
+       /* if(requestCode == SELECT_FILE && resultCode == RESULT_OK)
         {
             Uri imageUri = data.getData();
             userImageProfileView.setImageURI(imageUri);
@@ -281,15 +298,15 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
 
         //image crop library code
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-           CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 imageHoldUri = result.getUri();
+
                 userImageProfileView.setImageURI(imageHoldUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
-
             }
-        }
+        }*/
 
     }
 
@@ -303,4 +320,5 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
 }

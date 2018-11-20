@@ -1,5 +1,6 @@
 package com.example.dell.chitraka;
 
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -103,6 +104,12 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
             profiletv.setTextColor(getResources().getColor(R.color.blue));
         }
         viewpager.setCurrentItem(position);
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        viewPagerAdapter.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
     }
 }

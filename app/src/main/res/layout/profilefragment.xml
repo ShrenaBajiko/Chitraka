@@ -13,12 +13,9 @@
         android:layout_width="376dp"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="0dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_alignParentLeft="true">
 
 
         <TextView
@@ -70,8 +67,7 @@
         <Spinner
             android:id="@+id/spinner"
             android:layout_width="206dp"
-            android:layout_height="57dp"
-            />
+            android:layout_height="57dp" />
 
 
         <Button
@@ -79,10 +75,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_80sdp"
             android:background="@drawable/edittext_background"
             android:fontFamily="@font/avenirltstd_roman"
-            android:text="Save Information"
-            android:layout_marginTop="@dimen/_80sdp"/>
+            android:text="Save Information" />
 
         <Button
             android:id="@+id/logout"
@@ -93,6 +89,18 @@
             android:background="@drawable/edittext_background"
             android:fontFamily="@font/avenirltstd_roman"
             android:text="Logout" />
+
+        <Button
+            android:id="@+id/text_view_show_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:text="show uploaded image"
+            android:background="@drawable/edittext_background"
+
+
+            />
 
 
     </LinearLayout>

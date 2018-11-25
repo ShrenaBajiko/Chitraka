@@ -90,30 +90,6 @@
         android:background="@color/black" />
 
 
-
-    <LinearLayout
-        android:id="@+id/notification"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:padding="@dimen/_8sdp">
-
-        <ImageView
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:layout_gravity="center"
-            android:src="@drawable/not" />
-
-        <TextView
-            android:id="@+id/noti_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="NOTIFICATION"
-            android:textAlignment="center"
-            android:textSize="@dimen/_9sdp" />
-    </LinearLayout>
-
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"

@@ -15,17 +15,13 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     public ViewHolder(@NonNull View itemView) {
         super(itemView);
-
         mView=itemView;
-
     }
 
 
-    public void setDetails(Context applicationContext, String det, String imageUrl) {
+    public void setDetails(Context context, String det, String imageUrl) {
         TextView mDetail=mView.findViewById(R.id.description);
         ImageView mImageTv=mView.findViewById(R.id.imageview);
-
-
         mDetail.setText(det);
         Picasso.get().load(imageUrl).into(mImageTv);
 

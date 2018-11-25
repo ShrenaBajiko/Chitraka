@@ -1,8 +1,6 @@
 package com.example.dell.chitraka;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Handler;

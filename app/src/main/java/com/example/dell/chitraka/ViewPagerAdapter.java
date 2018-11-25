@@ -19,9 +19,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
                 return new contest_fragment();
             case 2:
                 return new upload_fragment();
-            case 3:
-                return new notification_fragment();
-            case 4:
+           case 3:
                 return new profilefragment();
         }
         return null;
@@ -30,6 +28,6 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getCount()
     {
-        return 5;
+        return 4;
     }
 }

@@ -44,7 +44,7 @@ public class ImageActivity extends AppCompatActivity {
 
         mUploads=new ArrayList<>();
 
-        mAdapter = new ImageAdapter(ImageActivity.this,mUploads);
+        mAdapter = new ImageAdapter(ImageActivity.this,new ArrayList<Upload>());
 
         mRecycleView.setAdapter(mAdapter);
 
@@ -64,9 +64,8 @@ public class ImageActivity extends AppCompatActivity {
                     upload.setKey(postSnapshot.getKey());
                     mUploads.add(upload);
                 }
-                mAdapter.notifyDataSetChanged();
-
-
+                // you have not re-init the data on adapter so it create problem
+                mAdapter.setData(mUploads);
                 mProgressCircle.setVisibility(View.INVISIBLE);
 
             }

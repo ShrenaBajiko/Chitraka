@@ -3,6 +3,7 @@ package com.example.dell.chitraka;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public void onBindViewHolder(@NonNull ImageViewHolder imageViewHolder, int i) {
         Upload uploadCurrent = mUploads.get(i);
         imageViewHolder.details.setText(uploadCurrent.getDet());
-
+        Log.d("TEXT",uploadCurrent.getImageUrl());
+        //uploadCurrent.getImageUrl() give this type of value com.google.android.gms.tasks.zzu@7faef41,
+        // this is not image url, please look at the firebase docs. Look at firebase storage docs for image url.. It is returning object value
         Picasso.get()
                 .load(uploadCurrent.getImageUrl())
                 .placeholder(R.mipmap.ic_launcher)
@@ -48,6 +51,16 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         return mUploads.size();
     }
 
+    // This method set the mUploads after the data has came from serve
+    public void setData(List<Upload> uploads) {
+        // first clear the list
+        mUploads.clear();
+        // then add the list that come from server
+        mUploads.addAll(uploads);
+        // finally notify
+        notifyDataSetChanged();
+    }
+
     public class ImageViewHolder extends  RecyclerView.ViewHolder{
         public TextView details;
         public ImageView imageView;
@@ -55,7 +68,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            imageView = itemView.findViewById(R.id.text_view_show_upload);
+            imageView = itemView.findViewById(R.id.image_view_upload);
             details = itemView.findViewById(R.id.detail);
         }
     }

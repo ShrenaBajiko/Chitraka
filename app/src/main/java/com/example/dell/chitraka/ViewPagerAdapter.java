@@ -5,6 +5,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
+    private upload_fragment uploadFragment;
+
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -18,7 +20,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
             case 1:
                 return new contest_fragment();
             case 2:
-                return new upload_fragment();
+               uploadFragment = new upload_fragment();
+                return uploadFragment;
             case 3:
                 return new notification_fragment();
            case 4:
@@ -31,5 +34,11 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public int getCount()
     {
         return 5;
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if(uploadFragment!=null){
+            uploadFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 }

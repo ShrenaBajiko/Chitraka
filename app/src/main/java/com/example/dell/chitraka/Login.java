@@ -97,6 +97,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
                         } else
                             {
+
                             Toast.makeText(Login.this, "LOGIN FAILED...PLEASE TRY AGAIN", Toast.LENGTH_SHORT).show();
 
                         }
@@ -106,6 +107,15 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     }
 
+   /* @Override
+    protected void onStart() {
+        super.onStart();
+
+        if(firebaseAuth.getCurrentUser() !=null)
+        {
+            finish();
+        }
+    }*/
 
     @Override
     public void onClick(View view) {

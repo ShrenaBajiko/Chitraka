@@ -39,6 +39,30 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.app.Activity.RESULT_OK;
 
 
+import android.webkit.MimeTypeMap;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
+
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.app.Activity.RESULT_OK;
+import static android.widget.Toast.LENGTH_SHORT;
+
 
 public class upload_fragment extends Fragment {
     private static final int RequestPermissionCode = 1189;
@@ -57,6 +81,8 @@ public class upload_fragment extends Fragment {
     private StorageTask mUploadTask;
 
 
+
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 
@@ -64,7 +90,7 @@ public class upload_fragment extends Fragment {
         imagePicker = view.findViewById(R.id.image_picker);
         imageView = view.findViewById(R.id.image_view);
         progressBar = view.findViewById(R.id.progress_bar);
-        buttonUpload  = view.findViewById(R.id.upload_image);
+        buttonUpload = view.findViewById(R.id.upload_image);
 
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
@@ -78,7 +104,6 @@ public class upload_fragment extends Fragment {
 
 
         });
-
 
 
         imagePicker.setOnClickListener(new View.OnClickListener() {
@@ -106,22 +131,17 @@ public class upload_fragment extends Fragment {
     }
 
 
-
-
-
     private void showPhotoAlertDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
 // ...Irrelevant code for customizing the buttons and title
         LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.take_picture_dialog, null);
+        View dialogView = inflater.inflate(R.layout.picture_dialog, null);
         dialogBuilder.setView(dialogView);
         LinearLayout takePhoto = dialogView.findViewById(R.id.take_photo);
         LinearLayout photoLibrary = dialogView.findViewById(R.id.photo_library);
         TextView cancel = dialogView.findViewById(R.id.cancel);
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
-
-
 
 
         photoLibrary.setOnClickListener(new View.OnClickListener() {
@@ -157,7 +177,6 @@ public class upload_fragment extends Fragment {
     }
 
 
-
     private void requestPermission() {
         ActivityCompat.requestPermissions(getActivity(), new
                 String[]{CAMERA, WRITE_EXTERNAL_STORAGE}, RequestPermissionCode);
@@ -172,8 +191,7 @@ public class upload_fragment extends Fragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
         switch (requestCode) {
             case RequestPermissionCode:
                 if (grantResults.length > 0) {
@@ -197,61 +215,60 @@ public class upload_fragment extends Fragment {
         //Use Intent to open camera.
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent,CAN_REQUEST);
+        startActivityForResult(intent, CAN_REQUEST);
         Toast.makeText(getContext(), "Open Camera", Toast.LENGTH_LONG).show();
     }
 
 
-    private String getFileExtension(Uri uri){
-       ContentResolver cR = getActivity().getContentResolver();
+    private String getFileExtension(Uri uri) {
+        ContentResolver cR = getActivity().getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
-      }
+    }
 
     private void uploadFile() {
         if (ImageUri != null) {
             StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(ImageUri));
-       fileReference.putFile(ImageUri)
-               .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                   @Override
-                   public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                       Handler handler = new Handler();
-                       handler.postDelayed(new Runnable() {
-                           @Override
-                           public void run() {
-                               progressBar.setProgress(0);
-                           }
-                       },500);
+            fileReference.putFile(ImageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressBar.setProgress(0);
+                                }
+                            }, 500);
 
-                       Toast.makeText(getActivity(),"upload sucessfull",Toast.LENGTH_SHORT).show();
-                       Upload upload = new Upload( taskSnapshot.getMetadata().getReference().getDownloadUrl().toString(),description.getText().toString().trim());
-                       String uploadId = mDatabaseRef.push().getKey();
-                       mDatabaseRef.child(uploadId).setValue(upload);
-
-
-                   }
-               })
-
-               .addOnFailureListener(new OnFailureListener() {
-                   @Override
-                   public void onFailure(@NonNull Exception e) {
-                       Toast.makeText(getActivity(),e.getMessage(),Toast.LENGTH_SHORT).show();
-
-                   }
-               })
-
-               .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                   @Override
-                   public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                       double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                       progressBar.setProgress((int)progress);
+                            Toast.makeText(getActivity(), "upload sucessfull", Toast.LENGTH_SHORT).show();
+                            Upload upload = new Upload(taskSnapshot.getMetadata().getReference().getDownloadUrl().toString(), "test");
+                            String uploadId = mDatabaseRef.push().getKey();
+                            mDatabaseRef.child(uploadId).setValue(upload);
 
 
-                   }
-               });
+                        }
+                    })
 
-        }
-        else {
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                        }
+                    })
+
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            progressBar.setProgress((int) progress);
+
+
+                        }
+                    });
+
+        } else {
             Toast.makeText(getActivity(), "no file selected", Toast.LENGTH_SHORT).show();
         }
 

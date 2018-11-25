@@ -2,13 +2,13 @@ package com.example.dell.chitraka;
 
 public class Model
 {
-  String det,imageUrl;
+    String det,imageUrl;
 
 
-  public Model()
-  {
+    public Model()
+    {
 
-  }
+    }
 
     public String getDet() {
         return det;

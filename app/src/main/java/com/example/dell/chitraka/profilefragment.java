@@ -1,17 +1,17 @@
 package com.example.dell.chitraka;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +24,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,13 +33,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-//import de.hdodenhof.circleimageview.CircleImageView;
+
 
 import java.io.IOException;
 
@@ -46,7 +46,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static android.app.Activity.RESULT_OK;
 
 
+
 public class profilefragment extends Fragment implements AdapterView.OnItemSelectedListener {
+
+
 
     private static final int CHOOSE_IMAGE=101;
     Uri uriProfileImage;
@@ -60,10 +63,9 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     Button save;
     TextView welcome;
     CircleImageView image;
+    Button showupload;
 
     FirebaseAuth mAuth;
-
-    ProgressDialog progressDialog;
 
 
     @Nullable
@@ -71,7 +73,8 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profilefragment, null, false);
 
-        Spinner spinner = view.findViewById(R.id.spinner);
+
+         Spinner spinner = view.findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.Gender, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -86,16 +89,20 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         save =  view.findViewById(R.id.save);
         welcome =  view.findViewById(R.id.textViewUserEmail);
         image=view.findViewById(R.id.profilepic);
+        showupload= view.findViewById(R.id.text_view_show_upload);
+
+       loadUserInformation();
 
         progressBar=view.findViewById(R.id.progressbar);
-
 
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v == logout) {
+                    progressBar.setVisibility(View.VISIBLE);
                     mAuth.signOut();
+                    progressBar.setVisibility(View.GONE);
                     getActivity().finish();
                     startActivity(new Intent(getActivity(), Login.class));
                 }
@@ -120,27 +127,78 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         });
 
 
+        showupload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openImageActivity();
+            }
+
+            private void openImageActivity() {
+                Intent intent = new Intent(getActivity(),ImageActivity.class);
+                startActivity(intent);
+
+            }
+        });
 
 
 
         return view;
     }
 
+     public void onStart() {
+        super.onStart();
+
+        if(mAuth.getCurrentUser() ==null)
+        {
+            getActivity().finish();
+            startActivity(new Intent(getActivity(),Login.class));
+        }
+    }
+
+
+   private void loadUserInformation() {
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            if (user.getPhotoUrl() != null)
+            {
+                Glide.with(getActivity())
+                        .load(user.getPhotoUrl().toString())
+                        .into(image);
+
+            }
+
+            if (user.getDisplayName() != null)
+            {
+              name.setText(user.getDisplayName());
+            }
+
+            if (user.getDisplayName() != null)
+            {
+                address.setText(user.getDisplayName());
+            }
+
+            if (user.getDisplayName() != null)
+            {
+                memo.setText(user.getDisplayName());
+            }
+
+            }
+    }
+
+
+
     private void saveUserInformation()
     {
         //progress dialog
+        progressBar.setVisibility(View.VISIBLE);
         String Name= name.getText().toString().trim();
         String Address= address.getText().toString().trim();
         String Memo= memo.getText().toString().trim();
 
         if(Name.isEmpty() && Address.isEmpty() && Memo.isEmpty())
         {
-            name.setError("NAME CANNOT BE EMPTY...");
-            name.requestFocus();
-            address.setError("ADDRESS CANNOT BE EMPTY...");
-            address.requestFocus();
-            memo.setError("MEMO CANNOT BE EMPTY...");
-            memo.requestFocus();
+            Toast.makeText(getActivity(),"FIELDS CANNOT BE EMPTY...",Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -161,7 +219,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
                 {
                     if(task.isSuccessful())
                     {
-                        Log.d("TEST","SUccess");
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getActivity(),"PROFILE ADDED SUCCESSFUL",Toast.LENGTH_SHORT).show();
 
                     }
@@ -169,8 +227,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
             });
         }
 
-
-    }
+        }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -184,6 +241,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
            try {
                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uriProfileImage);
                image.setImageBitmap(bitmap);
+
 
                uploadImageToFirebaseStorage();
 
@@ -208,7 +266,6 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
                 {
                     progressBar.setVisibility(View.GONE);
-
                     profileImageUrl=taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 
                 }

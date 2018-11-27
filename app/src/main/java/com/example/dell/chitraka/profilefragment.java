@@ -252,6 +252,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         {
             Uri imageUri = data.getData();
             userImageProfileView.setImageURI(imageUri);
+            imageHoldUri = imageUri;
 
 
         }else if ( requestCode == REQUEST_CAMERA && resultCode == RESULT_OK ){
@@ -259,6 +260,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
 
             Uri imageUri = data.getData();
             userImageProfileView.setImageURI(imageUri);
+            imageHoldUri = imageUri;
 
 
 

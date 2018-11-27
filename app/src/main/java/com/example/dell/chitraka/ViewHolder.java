@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.common.internal.service.Common;
+
 import com.squareup.picasso.Picasso;
 
-import static java.security.AccessController.getContext;
+
 
 public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -26,7 +26,6 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mDetail=mView.findViewById(R.id.description);
         ImageView mImageTv=mView.findViewById(R.id.imageview);
         mDetail.setText(det);
-       // Picasso.get().load(imageUrl).into(mImageTv);
         Picasso.get()
                 .load(imageUrl)
                 .resize(1500, 0)

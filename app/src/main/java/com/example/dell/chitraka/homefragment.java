@@ -1,6 +1,7 @@
 package com.example.dell.chitraka;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,7 +34,6 @@ public class homefragment extends Fragment {
 
         android.support.v7.app.ActionBar actionBar=((AppCompatActivity)getActivity()).getSupportActionBar();
         actionBar.setTitle("Newsfeed");
-        actionBar.setIcon(R.drawable.take_picture);
 
 
         mRecyclerView=view.findViewById(R.id.recyclerView);
@@ -59,7 +59,7 @@ public class homefragment extends Fragment {
                         Log.d("IMAGE",model.getImageUrl());
 
                         //Search on net
-                        viewHolder.setDetails(getActivity().getApplicationContext(),model.getDet(),model.getImageUrl());
+                        viewHolder.setDetails(getActivity().getApplicationContext(),model.det,model.imageUrl);
                     }
                 };
 

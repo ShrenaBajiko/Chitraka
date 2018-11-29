@@ -1,5 +1,6 @@
 package com.example.dell.chitraka;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -8,11 +9,15 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class HomePage extends AppCompatActivity implements View.OnClickListener {
     private ViewPager viewpager;
     private ViewPagerAdapter viewPagerAdapter;
     private LinearLayout home, profile, contest,upload;
     private TextView hometv, profiletv, contesttv,uploadtv;
+    private CircleImageView circle;
+    String user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +97,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
         else {
             profiletv.setTextColor(getResources().getColor(R.color.blue));
         }
-
         viewpager.setCurrentItem(position);
 
     }

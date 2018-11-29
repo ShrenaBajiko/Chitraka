@@ -2,12 +2,15 @@ package com.example.dell.chitraka;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,16 +31,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -46,18 +55,24 @@ import static android.app.Activity.RESULT_OK;
 
 public class profilefragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
-    private static final int REQUEST_CAMERA = 112;
-    private static final int SELECT_FILE = 122;
+    private static final int REQUEST_CAMERA = 1;
+    private static final int SELECT_FILE = 2;
     Uri imageHoldUri = null;
 
-    TextView name,address,memo;
     Button logout;
     Button save;
+    TextView name,address,memo;
     CircleImageView userImageProfileView;
     TextView welcome;
 
+    private String st1,st2,st3;
+
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
+
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference reference = firebaseDatabase.getReference();
+    private DatabaseReference childrefrence = reference.child("Imageurl");
 
     DatabaseReference mUserDatabase;
     StorageReference mStorageRef;
@@ -65,17 +80,11 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     ProgressDialog progressDialog;
 
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.profilefragment,null,false);
-
-
-        Spinner spinner=view.findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(getActivity(),R.array.Gender,android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
 
 
         name=(TextView)view.findViewById(R.id.name);
@@ -85,6 +94,8 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         logout=(Button)view.findViewById(R.id.logout);
         save=(Button) view.findViewById(R.id.save);
         welcome=(TextView)view.findViewById(R.id.textViewUserEmail) ;
+
+
 
 
         mAuth=FirebaseAuth.getInstance();
@@ -114,6 +125,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
             @Override
             public void onClick(View v) {
                 if (v == logout) {
+
                     mAuth.signOut();
                     getActivity().finish();
                     startActivity(new Intent(getActivity(), Login.class));
@@ -122,14 +134,38 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         });
 
 
+        SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getActivity());
+       String st4=prefs.getString("st1","");
+       name.setText(st4);
+        String st5=prefs.getString("st2","");
+        address.setText(st5);
+        String st6=prefs.getString("st3","");
+        memo.setText(st6);
+
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
                 saveUserProfile();
 
+                st1=name.getText().toString();
+                st2=address.getText().toString();
+                st3=memo.getText().toString();
+
+
+                SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getActivity());
+                SharedPreferences.Editor editor=prefs.edit();
+
+                editor.putString("st1",st1);
+                editor.putString("st2",st2);
+                editor.putString("st3",st3);
+                editor.apply();
+
+
             }
         });
+
 
 
         userImageProfileView.setOnClickListener(new View.OnClickListener() {
@@ -143,6 +179,8 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
 
         return view;
     }
+
+
 
     private void saveUserProfile()
     {
@@ -182,6 +220,8 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
 
                     progressDialog.dismiss();
 
+                    Toast.makeText(getActivity()," SUCCESSFULLY SAVED",Toast.LENGTH_SHORT).show();
+
                     getActivity().finish();
                     Intent moveToHome=new Intent(getActivity(),HomePage.class);
                     moveToHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -195,6 +235,9 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         {
             Toast.makeText(getActivity(),"Fields cannot be empty",Toast.LENGTH_LONG).show();
         }
+
+
+
     }
 
 
@@ -229,7 +272,6 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         //CHOOSE CAMERA
         Log.d("gola", "entered here");
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.setType("image/*");
         startActivityForResult(intent, REQUEST_CAMERA);
     }
 
@@ -252,6 +294,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         {
             Uri imageUri = data.getData();
             userImageProfileView.setImageURI(imageUri);
+            imageHoldUri = imageUri;
 
 
         }else if ( requestCode == REQUEST_CAMERA && resultCode == RESULT_OK ){
@@ -259,6 +302,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
 
             Uri imageUri = data.getData();
             userImageProfileView.setImageURI(imageUri);
+            imageHoldUri = imageUri;
 
 
 
@@ -279,5 +323,25 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        childrefrence.addValueEventListener(new com.google.firebase.database.ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot dataSnapshot) {
+                String message=dataSnapshot.getValue(String.class);
+                Picasso.get()
+                        .load(message)
+                        .into(userImageProfileView);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

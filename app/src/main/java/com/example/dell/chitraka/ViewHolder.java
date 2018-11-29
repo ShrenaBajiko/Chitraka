@@ -26,12 +26,14 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mDetail=mView.findViewById(R.id.description);
         ImageView mImageTv=mView.findViewById(R.id.imageview);
         mDetail.setText(det);
-        Picasso.get()
+       Picasso.get()
                 .load(imageUrl)
                 .resize(1500, 0)
                 .placeholder(R.drawable.disclaimer)
                 .error(R.drawable.disclaimer)
                 .into(mImageTv);
+
+
 
 
     }

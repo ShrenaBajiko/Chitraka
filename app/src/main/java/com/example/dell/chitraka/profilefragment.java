@@ -72,7 +72,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference reference = firebaseDatabase.getReference();
-    private DatabaseReference childrefrence = reference.child("Imageurl");
+    private DatabaseReference childreference = reference.child("Imageurl");
 
     DatabaseReference mUserDatabase;
     StorageReference mStorageRef;
@@ -329,12 +329,13 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     @Override
     public void onStart() {
         super.onStart();
-        childrefrence.addValueEventListener(new com.google.firebase.database.ValueEventListener() {
+        childreference.addValueEventListener(new com.google.firebase.database.ValueEventListener() {
             @Override
             public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot dataSnapshot) {
                 String message=dataSnapshot.getValue(String.class);
                 Picasso.get()
                         .load(message)
+                        .error(R.drawable.disclaimer)
                         .into(userImageProfileView);
             }
 

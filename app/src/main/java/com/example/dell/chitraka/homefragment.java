@@ -44,7 +44,7 @@ public class homefragment extends Fragment {
 
 
         android.support.v7.app.ActionBar actionBar=((AppCompatActivity)getActivity()).getSupportActionBar();
-        actionBar.setTitle("Newsfeed");
+        actionBar.setTitle("Chitraka");
 
 
         mRecyclerView=view.findViewById(R.id.recyclerView);
@@ -66,6 +66,7 @@ public class homefragment extends Fragment {
                 for(DataSnapshot postSnapshot : dataSnapshot.getChildren())
                 {
                     Upload upload=postSnapshot.getValue(Upload.class);
+                    upload.setKey(postSnapshot.getKey());
                     muploads.add(upload);
                 }
 

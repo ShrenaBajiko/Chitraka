@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="8dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="#fff"
     app:cardCornerRadius="3dp"
@@ -28,7 +29,9 @@
             android:id="@+id/description"
             android:textSize="22sp"
             android:textColor="#000"
-            android:text="this is the description box"/>
+            android:text="this is the description box"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"/>
 
 
 

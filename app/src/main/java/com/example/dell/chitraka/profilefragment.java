@@ -72,7 +72,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference reference = firebaseDatabase.getReference();
-    private DatabaseReference childreference = reference.child("Imageurl");
+    private DatabaseReference childreference =reference.child("Imageurl");
 
     DatabaseReference mUserDatabase;
     StorageReference mStorageRef;
@@ -94,7 +94,6 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         logout=(Button)view.findViewById(R.id.logout);
         save=(Button) view.findViewById(R.id.save);
         welcome=(TextView)view.findViewById(R.id.textViewUserEmail) ;
-
 
 
 

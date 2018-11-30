@@ -40,7 +40,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_16sdp"
                 android:background="@drawable/avatar"
-                android:layout_marginHorizontal="@dimen/_100sdp"
+                android:layout_centerInParent="true"
+                android:cropToPadding="true"
 
                 />
 
@@ -79,11 +80,6 @@
             android:textSize="@dimen/_16sdp" />
 
 
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="206dp"
-            android:layout_height="57dp" />
-
 
         <Button
             android:id="@+id/save"
@@ -104,15 +100,6 @@
             android:background="@drawable/edittext_background"
             android:fontFamily="@font/avenirltstd_roman"
             android:text="Logout" />
-
-        <Button
-            android:id="@+id/text_view_show_upload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/_16sdp"
-            android:text="show uploaded image"
-            android:background="@drawable/edittext_background"
 
 
             />

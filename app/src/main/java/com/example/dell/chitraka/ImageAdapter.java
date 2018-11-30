@@ -40,7 +40,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         // this is not image url, please look at the firebase docs. Look at firebase storage docs for image url.. It is returning object value
       /*Picasso.get()
                 .load(uploadCurrent.getImageUrl())
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.drawable.disclaimer)
                 .fit()
                 .centerInside()
                 .into(imageViewHolder.imageView);*/

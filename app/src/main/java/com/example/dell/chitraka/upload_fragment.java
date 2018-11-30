@@ -3,10 +3,12 @@ package com.example.dell.chitraka;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -126,9 +128,24 @@ public class upload_fragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
             ;
-        ImageUri = data.getData();
-        imageView.setImageURI(ImageUri);
-    }
+        if (data.getClipData() != null) {
+
+            int totalItemSelected = data.getClipData().getItemCount();
+            for (int i = 0; i < totalItemSelected; i++) {
+                Uri fileuri = data.getClipData().getItemAt(i).getUri();
+                String filename = getFileName(fileuri);
+
+
+
+            }
+            //Toast.makeText(getActivity(), "Selected Multiple Files", Toast.LENGTH_SHORT).show();
+        } else if (data.getData() != null) {
+            Toast.makeText(getActivity(), "Selected Single Image", Toast.LENGTH_SHORT).show();
+           ImageUri = data.getData();
+            imageView.setImageURI(ImageUri);
+        }
+        }
+
 
 
     private void showPhotoAlertDialog() {
@@ -148,11 +165,13 @@ public class upload_fragment extends Fragment {
             @Override
             public void onClick(View view) {
                 openFileChooser();
+                alertDialog.dismiss();
             }
 
             private void openFileChooser() {
                 Intent intent = new Intent();
                 intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent, PICK_IMAGE_REQUEST);
             }
@@ -191,7 +210,7 @@ public class upload_fragment extends Fragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case RequestPermissionCode:
                 if (grantResults.length > 0) {
@@ -274,6 +293,29 @@ public class upload_fragment extends Fragment {
 
     }
 
+  public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != 1)
+                result = result.substring(cut + 1);
+
+        }
+
+
+        return result;
+    }
 
 }
 

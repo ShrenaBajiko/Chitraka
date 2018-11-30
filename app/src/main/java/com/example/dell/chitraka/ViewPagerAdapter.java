@@ -22,9 +22,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
             case 2:
                uploadFragment = new upload_fragment();
                 return uploadFragment;
-            case 3:
-                return new notification_fragment();
-           case 4:
+           case 3:
                 return new profilefragment();
         }
         return null;
@@ -33,7 +31,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getCount()
     {
-        return 5;
+        return 4;
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

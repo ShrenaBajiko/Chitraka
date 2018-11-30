@@ -11,8 +11,8 @@ import android.widget.TextView;
 public class HomePage extends AppCompatActivity implements View.OnClickListener {
     private ViewPager viewpager;
     private ViewPagerAdapter viewPagerAdapter;
-    private LinearLayout home, profile, contest,upload,notification;
-    private TextView hometv, profiletv, contesttv,uploadtv,notificationtv;
+    private LinearLayout home, profile, contest,upload;
+    private TextView hometv, profiletv, contesttv,uploadtv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +27,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
         contesttv = findViewById(R.id.contest_tv);
         upload = findViewById(R.id.upload);
         uploadtv = findViewById(R.id.upload_tv);
-        notification = findViewById(R.id.notification);
-        notificationtv = findViewById(R.id.noti_tv);
         profile = findViewById(R.id.profile);
         profiletv = findViewById(R.id.profile_tv);
 
@@ -36,7 +34,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
         profile.setOnClickListener(this);
         contest.setOnClickListener(this);
         upload.setOnClickListener(this);
-        notification.setOnClickListener(this);
         changecolor(0);
         viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -71,11 +68,8 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
             case R.id.upload:
                 changecolor(2);
                 break;
-            case R.id.notification:
-                changecolor(3);
-                break;
             case R.id.profile:
-                changecolor(4);
+                changecolor(3);
                 break;
         }
 
@@ -85,7 +79,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
         hometv.setTextColor(getResources().getColor(R.color.black));
        contesttv.setTextColor(getResources().getColor(R.color.black));
         uploadtv.setTextColor(getResources().getColor(R.color.black));
-       notificationtv.setTextColor(getResources().getColor(R.color.black));
         profiletv.setTextColor(getResources().getColor(R.color.black));
         if (position == 0) {
             hometv.setTextColor(getResources().getColor(R.color.blue));
@@ -96,13 +89,10 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
         {
             uploadtv.setTextColor(getResources().getColor(R.color.blue));
         }
-        else if(position==3)
-        {
-           notificationtv. setTextColor(getResources().getColor(R.color.blue));
-        }
         else {
             profiletv.setTextColor(getResources().getColor(R.color.blue));
         }
+
         viewpager.setCurrentItem(position);
 
     }

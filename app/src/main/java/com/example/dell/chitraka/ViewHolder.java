@@ -7,7 +7,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import com.squareup.picasso.Picasso;
+
+
 
 public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -15,19 +18,21 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     public ViewHolder(@NonNull View itemView) {
         super(itemView);
-
         mView=itemView;
-
     }
 
 
-    public void setDetails(Context applicationContext, String det, String imageUrl) {
+    public void setDetails(Context context, String det, String imageUrl) {
         TextView mDetail=mView.findViewById(R.id.description);
         ImageView mImageTv=mView.findViewById(R.id.imageview);
-
-
         mDetail.setText(det);
-        Picasso.get().load(imageUrl).into(mImageTv);
+        Picasso.get()
+                .load(imageUrl)
+                .resize(1500, 0)
+                .placeholder(R.drawable.disclaimer)
+                .error(R.drawable.disclaimer)
+                .into(mImageTv);
+
 
     }
 }

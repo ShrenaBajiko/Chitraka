@@ -19,6 +19,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
+
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.app.Activity.RESULT_OK;
+
+
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -47,8 +70,8 @@ public class upload_fragment extends Fragment {
     private static final int RequestPermissionCode = 1189;
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAN_REQUEST = 1313;
-    private TextView imagePicker;
-    private ImageView imageView;
+    TextView imagePicker;
+    ImageView imageView;
     private Uri ImageUri;
     private TextView buttonUpload;
     private ProgressBar progressBar;
@@ -58,6 +81,8 @@ public class upload_fragment extends Fragment {
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
     private StorageTask mUploadTask;
+
+
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

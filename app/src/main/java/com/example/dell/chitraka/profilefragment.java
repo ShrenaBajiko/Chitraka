@@ -38,10 +38,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
-/*import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;*/
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -51,14 +48,13 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
 
     private static final int REQUEST_CAMERA = 112;
     private static final int SELECT_FILE = 122;
-    private  Uri imageHoldUri;
+    Uri imageHoldUri = null;
 
     TextView name,address,memo;
     Button logout;
     Button save;
     CircleImageView userImageProfileView;
     TextView welcome;
-    Button showupload;
 
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
@@ -74,11 +70,13 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.profilefragment,null,false);
 
+
         Spinner spinner=view.findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(getActivity(),R.array.Gender,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+
 
         name=(TextView)view.findViewById(R.id.name);
         address=(TextView)view.findViewById(R.id.address);
@@ -87,22 +85,6 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         logout=(Button)view.findViewById(R.id.logout);
         save=(Button) view.findViewById(R.id.save);
         welcome=(TextView)view.findViewById(R.id.textViewUserEmail) ;
-        showupload=(Button) view.findViewById(R.id.text_view_show_upload);
-
-        showupload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openImageActivity();
-            }
-
-            private void openImageActivity() {
-                Intent intent = new Intent(getActivity(),ImageActivity.class);
-                startActivity(intent);
-
-            }
-        });
-
-
 
 
         mAuth=FirebaseAuth.getInstance();
@@ -144,7 +126,6 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
             @Override
             public void onClick(View v)
             {
-
                 saveUserProfile();
 
             }
@@ -172,48 +153,43 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         Memo=memo.getText().toString().trim();
         Address=address.getText().toString().trim();
 
-        if(!TextUtils.isEmpty(Name) && !TextUtils.isEmpty(Memo) && !TextUtils.isEmpty(Address))
+
+        if(!TextUtils.isEmpty(Name) && !TextUtils.isEmpty(Memo) && !TextUtils.isEmpty(Address) && imageHoldUri!=null)
         {
-            if(imageHoldUri != null)
-            {
 
-                progressDialog.setTitle("SAVING PROFILE");
-                progressDialog.setMessage("PLEASE WAIT......");
-                progressDialog.show();
+            progressDialog.setTitle("SAVING PROFILE");
+            progressDialog.setMessage("PLEASE WAIT......");
+            progressDialog.show();
 
 
-                StorageReference mChildStorage=mStorageRef.child("User_Profile").child(imageHoldUri.getLastPathSegment());
-                String profilePicUrl=imageHoldUri.getLastPathSegment();
+            StorageReference mChildStorage=mStorageRef.child("User_Profile").child(imageHoldUri.getLastPathSegment());
+            final String profilePicUrl=imageHoldUri.getLastPathSegment();
 
-                mChildStorage.putFile(imageHoldUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-                    {
+            mChildStorage.putFile(imageHoldUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                {
 
-                        final Task<Uri> imageUrl=taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                    final Task<Uri> imageUrl=taskSnapshot.getMetadata().getReference().getDownloadUrl();
 
-                        mUserDatabase.child("Username").setValue(Name);
-                        mUserDatabase.child("Memo").setValue(Memo);
-                        mUserDatabase.child("Address").setValue(Address);
-                        mUserDatabase.child("userid").setValue(mAuth.getCurrentUser().getUid());
-                        mUserDatabase.child("Imageurl").setValue(imageUrl.toString());
+                    mUserDatabase.child("Username").setValue(Name);
+                    mUserDatabase.child("Memo").setValue(Memo);
+                    mUserDatabase.child("Address").setValue(Address);
+                    mUserDatabase.child("userid").setValue(mAuth.getCurrentUser().getUid());
+                    //mUserDatabase.child("Imageurl").setValue(imageUrl.toString());
+                    mUserDatabase.child("Imageurl").setValue(profilePicUrl);
 
 
-                        progressDialog.dismiss();
+                    progressDialog.dismiss();
 
-                        getActivity().finish();
-                        Intent moveToHome=new Intent(getActivity(),HomePage.class);
-                        moveToHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(moveToHome);
+                    getActivity().finish();
+                    Intent moveToHome=new Intent(getActivity(),HomePage.class);
+                    moveToHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(moveToHome);
 
-                    }
-                });
+                }
+            });
 
-            }
-            else
-            {
-                Toast.makeText(getActivity(),"Please select an image",Toast.LENGTH_LONG).show();
-            }
         }
         else
         {
@@ -272,41 +248,26 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
 
 
         //SAVE URI FROM GALLERY
-       /* if(requestCode == SELECT_FILE && resultCode == RESULT_OK)
+        if(requestCode == SELECT_FILE && resultCode == RESULT_OK)
         {
             Uri imageUri = data.getData();
             userImageProfileView.setImageURI(imageUri);
+            imageHoldUri = imageUri;
 
-            CropImage.activity(imageUri)
-                    .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(1,1)
-                    .start(getActivity());
 
         }else if ( requestCode == REQUEST_CAMERA && resultCode == RESULT_OK ){
             //SAVE URI FROM CAMERA
 
             Uri imageUri = data.getData();
             userImageProfileView.setImageURI(imageUri);
+            imageHoldUri = imageUri;
 
-            CropImage.activity(imageUri)
-                    .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(1,1)
-                    .start(getActivity());
+
 
         }
 
 
-        //image crop library code
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                imageHoldUri = result.getUri();
 
-                userImageProfileView.setImageURI(imageHoldUri);
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
-            }
-        }*/
 
     }
 
@@ -314,11 +275,11 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
     {
         String text=parent.getItemAtPosition(position).toString();
+        //Toast.makeText(parent.getContext(),text,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
 }

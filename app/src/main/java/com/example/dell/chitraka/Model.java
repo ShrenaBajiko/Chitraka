@@ -1,6 +1,6 @@
 package com.example.dell.chitraka;
 
-/*public class Model
+public class Model
 {
     String det,imageUrl;
 
@@ -25,4 +25,4 @@ package com.example.dell.chitraka;
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-}*/
+}

@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="#fff"
     app:cardCornerRadius="3dp"
-    app:cardElevation="3dp"
+    app:cardElevation="4dp"
     app:contentPadding="5dp"
     app:cardUseCompatPadding="true">
 
@@ -20,7 +20,7 @@
             android:layout_height="200dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
-            android:background="@drawable/avatar"/>
+            />
 
         <TextView
             android:layout_width="match_parent"

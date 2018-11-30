@@ -3,18 +3,18 @@ package com.example.dell.chitraka;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +26,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.esafirm.imagepicker.features.ImagePicker;
+import com.esafirm.imagepicker.model.Image;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -37,34 +39,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.app.Activity.RESULT_OK;
-
-
-import android.webkit.MimeTypeMap;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
-import com.google.firebase.storage.UploadTask;
+import java.util.List;
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.app.Activity.RESULT_OK;
-import static android.widget.Toast.LENGTH_SHORT;
 
 
 public class upload_fragment extends Fragment {
@@ -129,7 +108,18 @@ public class upload_fragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
             ;
-        if (data.getClipData() != null) {
+        ImageUri = data.getData();
+        imageView.setImageURI(ImageUri);
+
+        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+            // Get a list of picked images
+            List<Image> images = ImagePicker.getImages(data);
+            for (Image image : images) {
+                Log.d("TEST", image.getPath());
+                Log.d("TEST", image.getName());
+            }
+        }
+        /*if (data.getClipData() != null) {
 
             int totalItemSelected = data.getClipData().getItemCount();
             for (int i = 0; i < totalItemSelected; i++) {
@@ -144,7 +134,7 @@ public class upload_fragment extends Fragment {
             Toast.makeText(getActivity(), "Selected Single Image", Toast.LENGTH_SHORT).show();
            ImageUri = data.getData();
             imageView.setImageURI(ImageUri);
-        }
+        }*/
         }
 
 
@@ -170,11 +160,26 @@ public class upload_fragment extends Fragment {
             }
 
             private void openFileChooser() {
-                Intent intent = new Intent();
+                 /*
+        Library Use:
+        URL: https://github.com/esafirm/android-image-picker
+         */
+                //CHOOSE IMAGE FROM GALLERY
+                ImagePicker.create(getActivity())
+                        .toolbarFolderTitle("Folder") // folder selection title
+                        .toolbarImageTitle("Tap to select") // image selection title
+                        .toolbarArrowColor(Color.WHITE) // Toolbar 'up' arrow color
+                        .single() // single mode
+                        .multi() // multi mode (default mode)
+                        .limit(5) // max images can be selected (99 by default)
+                        .showCamera(false)
+                        .imageDirectory("Camera") // directory name for captured image  ("Camera" folder by default)
+                        .start();
+               /*Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+                startActivityForResult(intent, PICK_IMAGE_REQUEST);*/
             }
 
         });
@@ -295,7 +300,7 @@ public class upload_fragment extends Fragment {
 
     }
 
-  public String getFileName(Uri uri) {
+ /* public String getFileName(Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {
             Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
@@ -317,7 +322,7 @@ public class upload_fragment extends Fragment {
 
 
         return result;
-    }
+    }*/
 
 }
 

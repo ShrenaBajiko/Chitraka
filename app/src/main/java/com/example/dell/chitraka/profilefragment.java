@@ -4,16 +4,13 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,12 +19,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.esafirm.imagepicker.features.ImagePicker;
+import com.esafirm.imagepicker.model.Image;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,10 +32,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -50,7 +47,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     private static final int SELECT_FILE = 122;
     Uri imageHoldUri = null;
 
-    TextView name,address,memo;
+    TextView name, address, memo;
     Button logout;
     Button save;
     CircleImageView userImageProfileView;
@@ -69,11 +66,11 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.profilefragment,null,false);
+        View view = inflater.inflate(R.layout.profilefragment, null, false);
 
 
-        Spinner spinner=view.findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(getActivity(),R.array.Gender,android.R.layout.simple_spinner_item);
+        Spinner spinner = view.findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.Gender, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
@@ -87,6 +84,13 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         save=(Button) view.findViewById(R.id.save);
         welcome=(TextView)view.findViewById(R.id.textViewUserEmail) ;
         mTextViewShowUploads = view.findViewById(R.id.text_view_show_upload);
+        name = (TextView) view.findViewById(R.id.name);
+        address = (TextView) view.findViewById(R.id.address);
+        memo = (TextView) view.findViewById(R.id.memo);
+        userImageProfileView = (CircleImageView) view.findViewById(R.id.profilepic);
+        logout = (Button) view.findViewById(R.id.logout);
+        save = (Button) view.findViewById(R.id.save);
+        welcome = (TextView) view.findViewById(R.id.textViewUserEmail);
 
 
         mAuth=FirebaseAuth.getInstance();
@@ -135,7 +139,6 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         });
 
 
-
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -168,23 +171,21 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         Address=address.getText().toString().trim();
 
 
-        if(!TextUtils.isEmpty(Name) && !TextUtils.isEmpty(Memo) && !TextUtils.isEmpty(Address) && imageHoldUri!=null)
-        {
+        if (!TextUtils.isEmpty(Name) && !TextUtils.isEmpty(Memo) && !TextUtils.isEmpty(Address) && imageHoldUri != null) {
 
             progressDialog.setTitle("SAVING PROFILE");
             progressDialog.setMessage("PLEASE WAIT......");
             progressDialog.show();
 
 
-            StorageReference mChildStorage=mStorageRef.child("User_Profile").child(imageHoldUri.getLastPathSegment());
-            final String profilePicUrl=imageHoldUri.getLastPathSegment();
+            StorageReference mChildStorage = mStorageRef.child("User_Profile").child(imageHoldUri.getLastPathSegment());
+            final String profilePicUrl = imageHoldUri.getLastPathSegment();
 
             mChildStorage.putFile(imageHoldUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-                {
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                    final Task<Uri> imageUrl=taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                    final Task<Uri> imageUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl();
 
                     mUserDatabase.child("Username").setValue(Name);
                     mUserDatabase.child("Memo").setValue(Memo);
@@ -197,7 +198,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
                     progressDialog.dismiss();
 
                     getActivity().finish();
-                    Intent moveToHome=new Intent(getActivity(),HomePage.class);
+                    Intent moveToHome = new Intent(getActivity(), HomePage.class);
                     moveToHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(moveToHome);
 
@@ -212,9 +213,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     }
 
 
-
-    private void profilePicSelection()
-    {
+    private void profilePicSelection() {
         final CharSequence[] items = {"Take Photo", "Choose from Library",
                 "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -248,28 +247,37 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     }
 
     private void galleryIntent() {
-
+        /*
+        Library Use:
+        URL: https://github.com/esafirm/android-image-picker
+         */
         //CHOOSE IMAGE FROM GALLERY
-        Log.d("gola", "entered here");
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        startActivityForResult(intent, SELECT_FILE);
+        ImagePicker.create(getActivity())
+                .toolbarFolderTitle("Folder") // folder selection title
+                .toolbarImageTitle("Tap to select") // image selection title
+                .toolbarArrowColor(Color.WHITE) // Toolbar 'up' arrow color
+                .single() // single mode
+                .multi() // multi mode (default mode)
+                .limit(5) // max images can be selected (99 by default)
+                .showCamera(false)
+                .imageDirectory("Camera") // directory name for captured image  ("Camera" folder by default)
+                .start();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
+        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+            // Get a list of picked images
+            List<Image> images = ImagePicker.getImages(data);
+            for (Image image : images) {
+                Log.d("TEST", image.getPath());
+                Log.d("TEST", image.getName());
+            }
+        }
         //SAVE URI FROM GALLERY
-        if(requestCode == SELECT_FILE && resultCode == RESULT_OK)
-        {
-            Uri imageUri = data.getData();
-            userImageProfileView.setImageURI(imageUri);
-            imageHoldUri = imageUri;
-
-
-        }else if ( requestCode == REQUEST_CAMERA && resultCode == RESULT_OK ){
+        if (requestCode == REQUEST_CAMERA && resultCode == RESULT_OK) {
             //SAVE URI FROM CAMERA
 
             Uri imageUri = data.getData();

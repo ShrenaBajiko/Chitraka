@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -264,6 +265,7 @@ public class upload_fragment extends Fragment {
                             Upload upload = new Upload(taskSnapshot.getMetadata().getReference().getDownloadUrl().toString(), "test");
                             String uploadId = mDatabaseRef.push().getKey();
                             mDatabaseRef.child(uploadId).setValue(upload);
+                            Task<Uri> downloadUri = taskSnapshot.getMetadata().getReference().getDownloadUrl();
 
 
                         }

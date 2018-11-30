@@ -55,6 +55,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     Button save;
     CircleImageView userImageProfileView;
     TextView welcome;
+    private TextView mTextViewShowUploads;
 
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
@@ -85,6 +86,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         logout=(Button)view.findViewById(R.id.logout);
         save=(Button) view.findViewById(R.id.save);
         welcome=(TextView)view.findViewById(R.id.textViewUserEmail) ;
+        mTextViewShowUploads = view.findViewById(R.id.text_view_show_upload);
 
 
         mAuth=FirebaseAuth.getInstance();
@@ -103,6 +105,17 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
                 }
             }
         };
+        mTextViewShowUploads.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                openImagesActivity();
+            }
+
+            private void openImagesActivity() {
+                Intent intent = new Intent(getActivity(), ImageActivity.class);
+                startActivity(intent);
+            }
+        });
 
         progressDialog=new ProgressDialog(getActivity());
 
@@ -120,6 +133,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
                 }
             }
         });
+
 
 
         save.setOnClickListener(new View.OnClickListener() {

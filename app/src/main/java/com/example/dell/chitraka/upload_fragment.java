@@ -93,6 +93,7 @@ public class upload_fragment extends Fragment {
         imageView = view.findViewById(R.id.image_view);
         progressBar = view.findViewById(R.id.progress_bar);
         buttonUpload = view.findViewById(R.id.upload_image);
+        description=view.findViewById(R.id.description);
 
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");

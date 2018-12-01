@@ -9,6 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
     buildTypes {
         release {
@@ -48,6 +49,9 @@ dependencies {
     implementation 'com.github.esafirm.android-image-picker:imagepicker:1.13.1'
     // for experimental rx picker
     implementation 'com.github.esafirm.android-image-picker:rximagepicker:1.13.1'
+
+
+
 
 
 

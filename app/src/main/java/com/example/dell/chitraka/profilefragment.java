@@ -326,14 +326,19 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     @Override
     public void onStart() {
         super.onStart();
-        childreference.addValueEventListener(new com.google.firebase.database.ValueEventListener() {
+        childreference.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
             @Override
             public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot dataSnapshot) {
-                String message=dataSnapshot.getValue(String.class);
-                Picasso.get()
-                        .load(message)
-                        .error(R.drawable.disclaimer)
-                        .into(userImageProfileView);
+                for(com.google.firebase.database.DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String url = ds.getValue(String.class);
+                    Log.d("TEST",url);
+
+                    Picasso.get()
+                            .load(url)
+                            .error(R.drawable.disclaimer)
+                            .into(userImageProfileView);
+                }
+
             }
 
             @Override

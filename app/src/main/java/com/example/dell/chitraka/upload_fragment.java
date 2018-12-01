@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,31 +42,6 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.app.Activity.RESULT_OK;
 
 
-import android.webkit.MimeTypeMap;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
-import com.google.firebase.storage.UploadTask;
-
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.app.Activity.RESULT_OK;
-import static android.widget.Toast.LENGTH_SHORT;
-
-
 public class upload_fragment extends Fragment {
     private static final int RequestPermissionCode = 1189;
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -83,8 +59,6 @@ public class upload_fragment extends Fragment {
     private StorageTask mUploadTask;
 
 
-
-
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 
@@ -93,7 +67,7 @@ public class upload_fragment extends Fragment {
         imageView = view.findViewById(R.id.image_view);
         progressBar = view.findViewById(R.id.progress_bar);
         buttonUpload = view.findViewById(R.id.upload_image);
-        description=view.findViewById(R.id.description);
+        description = view.findViewById(R.id.description);
 
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
@@ -137,16 +111,14 @@ public class upload_fragment extends Fragment {
                 String filename = getFileName(fileuri);
 
 
-
             }
             //Toast.makeText(getActivity(), "Selected Multiple Files", Toast.LENGTH_SHORT).show();
         } else if (data.getData() != null) {
             Toast.makeText(getActivity(), "Selected Single Image", Toast.LENGTH_SHORT).show();
-           ImageUri = data.getData();
+            ImageUri = data.getData();
             imageView.setImageURI(ImageUri);
         }
-        }
-
+    }
 
 
     private void showPhotoAlertDialog() {
@@ -248,7 +220,7 @@ public class upload_fragment extends Fragment {
 
     private void uploadFile() {
         if (ImageUri != null) {
-            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(ImageUri));
+            final StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(ImageUri));
             fileReference.putFile(ImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -260,11 +232,16 @@ public class upload_fragment extends Fragment {
                                     progressBar.setProgress(0);
                                 }
                             }, 500);
-
+                            fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Upload upload = new Upload(uri.toString(), description.getText().toString());
+                                    String uploadId = mDatabaseRef.push().getKey();
+                                    mDatabaseRef.child(uploadId).setValue(upload);
+                                }
+                            });
                             Toast.makeText(getActivity(), "upload sucessfull", Toast.LENGTH_SHORT).show();
-                            Upload upload = new Upload(taskSnapshot.getMetadata().getReference().getDownloadUrl().toString(), "test");
-                            String uploadId = mDatabaseRef.push().getKey();
-                            mDatabaseRef.child(uploadId).setValue(upload);
+                            Log.d("TEST", taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
 
 
                         }
@@ -294,7 +271,7 @@ public class upload_fragment extends Fragment {
 
     }
 
-  public String getFileName(Uri uri) {
+    public String getFileName(Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {
             Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);

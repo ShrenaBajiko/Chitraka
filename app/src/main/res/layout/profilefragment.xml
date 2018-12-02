@@ -4,19 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/f24b4a7bf9f24d1ba5f899339e6949f3"
-    tools:context="com.example.dell.chitraka.profilefragment"
-    >
+    tools:context="com.example.dell.chitraka.profilefragment">
 
 
     <LinearLayout
         android:layout_width="376dp"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
         android:layout_marginLeft="9dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="0dp"
         android:orientation="vertical">
-
 
 
         <TextView
@@ -38,9 +36,9 @@
                 android:id="@+id/profilepic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="@dimen/_16sdp"
                 android:background="@drawable/avatar"
-                android:layout_centerInParent="true"
                 android:cropToPadding="true"
 
                 />
@@ -50,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </RelativeLayout>
 
@@ -80,7 +78,6 @@
             android:textSize="@dimen/_16sdp" />
 
 
-
         <Button
             android:id="@+id/save"
             android:layout_width="wrap_content"
@@ -101,9 +98,21 @@
             android:fontFamily="@font/avenirltstd_roman"
             android:text="Logout" />
 
-
+        <TextView
+            android:id="@+id/text_view_show_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:fontFamily="@font/avenirltstd_roman"
+            android:layout_marginLeft="150dp"
+            android:background="@drawable/edittext_background"
+            android:gravity="center"
+            android:text="show upload"
+            android:textSize="20dp"
             />
 
+
+        />
 
 
     </LinearLayout>

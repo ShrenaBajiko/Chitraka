@@ -108,8 +108,8 @@ public class upload_fragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
             ;
-        ImageUri = data.getData();
-        imageView.setImageURI(ImageUri);
+
+
 
         if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
             // Get a list of picked images
@@ -117,6 +117,8 @@ public class upload_fragment extends Fragment {
             for (Image image : images) {
                 Log.d("TEST", image.getPath());
                 Log.d("TEST", image.getName());
+                ImageUri = data.getData();
+                imageView.setImageURI(ImageUri);
             }
         }
         /*if (data.getClipData() != null) {

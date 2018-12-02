@@ -38,12 +38,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         Log.d("TEXT",uploadCurrent.getImageUrl());
         //uploadCurrent.getImageUrl() give this type of value com.google.android.gms.tasks.zzu@7faef41,
         // this is not image url, please look at the firebase docs. Look at firebase storage docs for image url.. It is returning object value
-      /*Picasso.get()
+      Picasso.get()
                 .load(uploadCurrent.getImageUrl())
                 .placeholder(R.mipmap.ic_launcher)
                 .fit()
                 .centerInside()
-                .into(imageViewHolder.imageView);*/
+                .into(imageViewHolder.imageView);
 
     }
 

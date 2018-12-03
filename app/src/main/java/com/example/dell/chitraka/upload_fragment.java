@@ -30,7 +30,6 @@ import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -63,8 +62,6 @@ public class upload_fragment extends Fragment {
     private StorageTask mUploadTask;
 
 
-
-
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 
@@ -73,6 +70,7 @@ public class upload_fragment extends Fragment {
         imageView = view.findViewById(R.id.image_view);
         progressBar = view.findViewById(R.id.progress_bar);
         buttonUpload = view.findViewById(R.id.upload_image);
+        description = view.findViewById(R.id.description);
 
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
@@ -140,7 +138,6 @@ public class upload_fragment extends Fragment {
         }
 
 
-
     private void showPhotoAlertDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
 // ...Irrelevant code for customizing the buttons and title
@@ -174,7 +171,7 @@ public class upload_fragment extends Fragment {
                         .single() // single mode
                         .multi() // multi mode (default mode)
                         .limit(5) // max images can be selected (99 by default)
-                        .showCamera(false)
+                        .showCamera(true)
                         .imageDirectory("Camera") // directory name for captured image  ("Camera" folder by default)
                         .start();
                /*Intent intent = new Intent();
@@ -255,7 +252,7 @@ public class upload_fragment extends Fragment {
 
     private void uploadFile() {
         if (ImageUri != null) {
-            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(ImageUri));
+            final StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(ImageUri));
             fileReference.putFile(ImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -267,12 +264,16 @@ public class upload_fragment extends Fragment {
                                     progressBar.setProgress(0);
                                 }
                             }, 500);
-
+                            fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Upload upload = new Upload(uri.toString(), description.getText().toString());
+                                    String uploadId = mDatabaseRef.push().getKey();
+                                    mDatabaseRef.child(uploadId).setValue(upload);
+                                }
+                            });
                             Toast.makeText(getActivity(), "upload sucessfull", Toast.LENGTH_SHORT).show();
-                            Upload upload = new Upload(taskSnapshot.getMetadata().getReference().getDownloadUrl().toString(), "test");
-                            String uploadId = mDatabaseRef.push().getKey();
-                            mDatabaseRef.child(uploadId).setValue(upload);
-                            Task<Uri> downloadUri = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                            Log.d("TEST", taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
 
 
                         }

@@ -1,5 +1,6 @@
 package com.example.dell.chitraka;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -47,14 +48,18 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 
 public class profilefragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
-    private static final int REQUEST_CAMERA = 1;
-    private static final int SELECT_FILE = 2;
+    private static final int REQUEST_CAMERA = 0;
+    private static final int SELECT_FILE = 1;
     Uri imageHoldUri = null;
 
     Button logout;
@@ -118,6 +123,16 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         mStorageRef=FirebaseStorage.getInstance().getReference();
 
 
+        SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String st4=prefs.getString("st1","");
+        name.setText(st4);
+        String st5=prefs.getString("st2","");
+        address.setText(st5);
+        String st6=prefs.getString("st3","");
+        memo.setText(st6);
+
+
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,18 +141,26 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
                     mAuth.signOut();
                     getActivity().finish();
                     startActivity(new Intent(getActivity(), Login.class));
+
+
+                    st1=name.getText().toString();
+                    st2=address.getText().toString();
+                    st3=memo.getText().toString();
+
+
+
+                    SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    SharedPreferences.Editor editor=prefs.edit();
+
+                    editor.putString("st1",st1);
+                    editor.putString("st2",st2);
+                    editor.putString("st3",st3);
+                    editor.apply();
+
                 }
             }
         });
 
-
-        SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getActivity());
-       String st4=prefs.getString("st1","");
-       name.setText(st4);
-        String st5=prefs.getString("st2","");
-        address.setText(st5);
-        String st6=prefs.getString("st3","");
-        memo.setText(st6);
 
 
         save.setOnClickListener(new View.OnClickListener() {
@@ -149,6 +172,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
                 st1=name.getText().toString();
                 st2=address.getText().toString();
                 st3=memo.getText().toString();
+
 
 
                 SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -212,7 +236,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
                     mUserDatabase.child("Address").setValue(Address);
                     mUserDatabase.child("userid").setValue(mAuth.getCurrentUser().getUid());
                     //mUserDatabase.child("Imageurl").setValue(imageUrl.toString());
-                    mUserDatabase.child("Imageurl").setValue(profilePicUrl);
+                   mUserDatabase.child("Imageurl").setValue(profilePicUrl);
 
 
                     progressDialog.dismiss();
@@ -268,8 +292,11 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
 
         //CHOOSE CAMERA
         Log.d("gola", "entered here");
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, REQUEST_CAMERA);
+        /*Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, REQUEST_CAMERA);*/
+
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, REQUEST_CAMERA);
     }
 
     private void galleryIntent() {
@@ -291,24 +318,37 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         {
             Uri imageUri = data.getData();
             userImageProfileView.setImageURI(imageUri);
+            userImageProfileView.invalidate();
             imageHoldUri = imageUri;
 
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("image", String.valueOf(imageUri));
+            editor.commit();
 
-        }else if ( requestCode == REQUEST_CAMERA && resultCode == RESULT_OK ){
+
+
+
+
+        }else if ( requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK ){
             //SAVE URI FROM CAMERA
 
             Uri imageUri = data.getData();
             userImageProfileView.setImageURI(imageUri);
+            userImageProfileView.invalidate();
             imageHoldUri = imageUri;
 
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("image", String.valueOf(imageUri));
+            editor.commit();
 
 
-        }
 
-
-
+            }
 
     }
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)

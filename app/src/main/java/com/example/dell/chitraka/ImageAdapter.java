@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,18 +30,21 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(mContext).inflate(R.layout.image_item,viewGroup,false);
         return new ImageViewHolder(v);
+
+
     }
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder imageViewHolder, int i) {
         Upload uploadCurrent = mUploads.get(i);
         imageViewHolder.details.setText(uploadCurrent.getDet());
+
         Log.d("TEXT",uploadCurrent.getImageUrl());
         //uploadCurrent.getImageUrl() give this type of value com.google.android.gms.tasks.zzu@7faef41,
         // this is not image url, please look at the firebase docs. Look at firebase storage docs for image url.. It is returning object value
-      Picasso.get()
+     Picasso.get()
                 .load(uploadCurrent.getImageUrl())
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.drawable.disclaimer)
                 .fit()
                 .centerInside()
                 .into(imageViewHolder.imageView);
@@ -65,12 +69,20 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public class ImageViewHolder extends  RecyclerView.ViewHolder{
         public TextView details;
         public ImageView imageView;
+        public TextView count;
+        public Button likebutton;
+
 
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
 
             imageView = itemView.findViewById(R.id.image_view_upload);
             details = itemView.findViewById(R.id.detail);
+            likebutton = itemView.findViewById(R.id.likebutton);
+            count = itemView.findViewById(R.id.counter);
+
         }
+
     }
+
 }

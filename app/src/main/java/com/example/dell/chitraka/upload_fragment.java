@@ -206,7 +206,7 @@ public class upload_fragment extends Fragment {
     private void openCamera() {
         //Use Intent to open camera.
 
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, CAN_REQUEST);
         Toast.makeText(getContext(), "Open Camera", Toast.LENGTH_LONG).show();
     }
@@ -225,6 +225,7 @@ public class upload_fragment extends Fragment {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -241,6 +242,11 @@ public class upload_fragment extends Fragment {
                                 }
                             });
                             Toast.makeText(getActivity(), "upload sucessfull", Toast.LENGTH_SHORT).show();
+
+                            getActivity().finish();
+                            Intent moveToHome=new Intent(getActivity(),HomePage.class);
+                            moveToHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(moveToHome);
                             Log.d("TEST", taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
 
 

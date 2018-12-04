@@ -3,11 +3,23 @@ package com.example.dell.chitraka;
 public class Model
 {
     String det,imageUrl;
+    int likecount;
 
+    public Model(int likecount) {
+        this.likecount = likecount;
+    }
 
     public Model()
     {
 
+    }
+
+    public int getLikecount() {
+        return likecount;
+    }
+
+    public void setLikecount(int likecount) {
+        this.likecount = likecount;
     }
 
     public String getDet() {

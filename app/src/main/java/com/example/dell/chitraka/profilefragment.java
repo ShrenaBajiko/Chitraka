@@ -17,6 +17,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +57,7 @@ import java.io.InputStream;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 
 public class profilefragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
@@ -237,6 +240,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
                     mUserDatabase.child("userid").setValue(mAuth.getCurrentUser().getUid());
                     //mUserDatabase.child("Imageurl").setValue(imageUrl.toString());
                    mUserDatabase.child("Imageurl").setValue(profilePicUrl);
+                   mUserDatabase.child("Likecount").setValue(0);
 
 
                     progressDialog.dismiss();
@@ -321,16 +325,14 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
             userImageProfileView.invalidate();
             imageHoldUri = imageUri;
 
+
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("image", String.valueOf(imageUri));
-            editor.commit();
+            editor.apply();
 
-
-
-
-
-        }else if ( requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK ){
+        }
+        if ( requestCode == REQUEST_CAMERA && resultCode == RESULT_OK ){
             //SAVE URI FROM CAMERA
 
             Uri imageUri = data.getData();
@@ -338,10 +340,13 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
             userImageProfileView.invalidate();
             imageHoldUri = imageUri;
 
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+           userImageProfileView.setImageBitmap(photo);
+
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("image", String.valueOf(imageUri));
-            editor.commit();
+           editor.apply();
 
 
 

@@ -25,6 +25,11 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     View mView;
 
+    ImageButton mLikebtn;
+    TextView count;
+
+    DatabaseReference mDatabaseLike;
+    FirebaseAuth mAuth;
 
 
     public ViewHolder(@NonNull View itemView) {
@@ -32,21 +37,54 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         mView=itemView;
 
 
+        mLikebtn=(ImageButton)mView.findViewById(R.id.likebutton);
+        count=(TextView)mView.findViewById(R.id.counter);
 
-    }
+        mDatabaseLike=FirebaseDatabase.getInstance().getReference().child("Likes");
+        mAuth=FirebaseAuth.getInstance();
+        mDatabaseLike.keepSynced(true);
+
+        }
+
+        public void setlikecount(int likecount)
+        {
+            count=(TextView) mView.findViewById(R.id.counter);
+            count.setText(Integer.toString(likecount));
+        }
 
 
 
-    public void setDetails(Context context, String det, String imageUrl,String likeCount,String likebtn) {
+        public void setLikeBtn(final String post_key)
+        {
+            mDatabaseLike.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.child(post_key).hasChild(mAuth.getCurrentUser().getUid()))
+                    {
+                        mLikebtn.setImageResource(R.drawable.red_heart);
+
+                    }
+                    else
+                    {
+                        mLikebtn.setImageResource(R.drawable.cards_heart);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
+    public void setDetails(Context context, String det, String imageUrl) {
 
         TextView mDetail=mView.findViewById(R.id.description);
         ImageView mImageTv=mView.findViewById(R.id.imageview);
-        Button mLikebtn= mView.findViewById(R.id.likebutton);
-       final TextView count= mView.findViewById(R.id.counter);
+
 
         mDetail.setText(det);
-       count.setText(likeCount);
-       mLikebtn.setText(likebtn);
 
 
 

@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -38,17 +39,20 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.app.Activity.RESULT_OK;
 
 
 public class upload_fragment extends Fragment {
     private static final int RequestPermissionCode = 1189;
     private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int REQUEST_CODE = 0;
+    private static final int KEY_SELECTED_PHOTOS = 100;
     private static final int CAN_REQUEST = 1313;
+    private static final int RESULT_OK = 0 ;
     TextView imagePicker;
     ImageView imageView;
     private Uri ImageUri;
@@ -60,6 +64,9 @@ public class upload_fragment extends Fragment {
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
     private StorageTask mUploadTask;
+
+    ArrayList<String> filePaths = new ArrayList<>();
+    GridView gv;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -74,6 +81,11 @@ public class upload_fragment extends Fragment {
 
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+        gv = (GridView) view.findViewById(R.id.gv);
+
+
+
+
 
         buttonUpload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,12 +116,11 @@ public class upload_fragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
+       if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
             ;
 
 
-
-        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+      if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
             // Get a list of picked images
             List<Image> images = ImagePicker.getImages(data);
             for (Image image : images) {
@@ -119,22 +130,7 @@ public class upload_fragment extends Fragment {
                 imageView.setImageURI(ImageUri);
             }
         }
-        /*if (data.getClipData() != null) {
 
-            int totalItemSelected = data.getClipData().getItemCount();
-            for (int i = 0; i < totalItemSelected; i++) {
-                Uri fileuri = data.getClipData().getItemAt(i).getUri();
-                String filename = getFileName(fileuri);
-
-
-
-            }
-            //Toast.makeText(getActivity(), "Selected Multiple Files", Toast.LENGTH_SHORT).show();
-        } else if (data.getData() != null) {
-            Toast.makeText(getActivity(), "Selected Single Image", Toast.LENGTH_SHORT).show();
-           ImageUri = data.getData();
-            imageView.setImageURI(ImageUri);
-        }*/
         }
 
 
@@ -174,11 +170,16 @@ public class upload_fragment extends Fragment {
                         .showCamera(true)
                         .imageDirectory("Camera") // directory name for captured image  ("Camera" folder by default)
                         .start();
-               /*Intent intent = new Intent();
+
+
+
+               /*Intent intent = new Intent(getActivity(),Upload_imageAdapter.class);
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, PICK_IMAGE_REQUEST);*/
+                startActivityForResult(intent)
+
+         */
             }
 
         });
@@ -303,29 +304,7 @@ public class upload_fragment extends Fragment {
 
     }
 
- /* public String getFileName(Uri uri) {
-        String result = null;
-        if (uri.getScheme().equals("content")) {
-            Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                }
-            } finally {
-                cursor.close();
-            }
-        }
-        if (result == null) {
-            result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if (cut != 1)
-                result = result.substring(cut + 1);
 
-        }
-
-
-        return result;
-    }*/
 
 }
 

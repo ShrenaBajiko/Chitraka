@@ -17,6 +17,11 @@
         android:text="Image Picker"
         android:textAlignment="center"
         android:textSize="@dimen/_16sdp" />
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
 
     <ImageView
         android:id="@+id/image_view"
@@ -26,6 +31,7 @@
 
         android:layout_marginBottom="60dp"
         android:layout_marginTop="70dp" />
+    </ListView>
 
     <EditText
         android:id="@+id/description"
@@ -58,6 +64,10 @@
         android:text="Upload Image"
         android:textAlignment="center"
         android:textSize="@dimen/_16sdp" />
+
+
+
+
 
 
 

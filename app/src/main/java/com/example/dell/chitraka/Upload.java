@@ -1,7 +1,7 @@
 package com.example.dell.chitraka;
 
 
-    public class Upload {
+public class Upload {
         private String ImageUrl;
         private String Det;
         private String mKey;
@@ -32,7 +32,7 @@ package com.example.dell.chitraka;
         }
 
         public void  setDet(String detail){
-            Det = detail;
+            this.Det = detail;
         }
         public String getKey() {
             return mKey;

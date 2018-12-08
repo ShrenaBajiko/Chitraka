@@ -108,7 +108,7 @@ public class homefragment extends Fragment {
     }
 
 
-   @Override
+
     public void onStart() {
         super.onStart();
         FirebaseRecyclerAdapter<Upload, ImageAdapter.ImageViewHolder> firebaseRecyclerAdapter=

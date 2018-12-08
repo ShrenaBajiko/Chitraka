@@ -71,8 +71,6 @@ public class profilefragment extends Fragment {
     private static final int SELECT_FILE = 1;
     Uri imageHoldUri = null;
 
-    private  Context context;
-
 
     Button logout;
     Button save;
@@ -382,10 +380,15 @@ public class profilefragment extends Fragment {
 
 
 
-                    Picasso.with(context)
+                    Picasso.with(getActivity())
                             .load(imageHoldUri)
                             .error(R.drawable.disclaimer)
                             .into(userImageProfileView);
+
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("image", String.valueOf(imageHoldUri));
+                    editor.apply();
                 }
 
             }

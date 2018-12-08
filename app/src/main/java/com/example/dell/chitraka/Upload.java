@@ -13,7 +13,7 @@ public class Upload {
 
 
 
-        public Upload()
+        public Upload(String s, String toString)
         {
 
 

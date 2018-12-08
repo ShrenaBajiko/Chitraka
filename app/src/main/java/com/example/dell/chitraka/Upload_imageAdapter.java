@@ -50,7 +50,7 @@ public Upload_imageAdapter(upload_fragment c, ArrayList<Upload> upload) {
 
         //bind data
         nameText.setText(U.getDet());
-        Picasso.get()
+        Picasso.with(c)
                 .load(U.getImageUrl())
                 .placeholder(R.mipmap.ic_launcher).into(img);
 

@@ -99,9 +99,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                             {
 
                             Toast.makeText(Login.this, "LOGIN FAILED...PLEASE TRY AGAIN", Toast.LENGTH_SHORT).show();
-                                progressDialog.setTitle("FAILED!!!!");
-                                progressDialog.setMessage("PLEASE CHECK YOUR INTERNET CONNECTION AND TRY AGAIN");
-                                progressDialog.show();
 
                         }
 

@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -44,6 +43,7 @@ import java.util.List;
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.app.Activity.RESULT_OK;
 
 
 public class upload_fragment extends Fragment {
@@ -66,7 +66,7 @@ public class upload_fragment extends Fragment {
     private StorageTask mUploadTask;
 
     ArrayList<String> filePaths = new ArrayList<>();
-    GridView gv;
+    //GridView gv;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -81,7 +81,7 @@ public class upload_fragment extends Fragment {
 
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
-        gv = (GridView) view.findViewById(R.id.gv);
+      //  gv = (GridView) view.findViewById(R.id.gv);
 
 
 
@@ -116,11 +116,12 @@ public class upload_fragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-       if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
             ;
 
 
-      if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+
+        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
             // Get a list of picked images
             List<Image> images = ImagePicker.getImages(data);
             for (Image image : images) {
@@ -130,7 +131,22 @@ public class upload_fragment extends Fragment {
                 imageView.setImageURI(ImageUri);
             }
         }
+        /*if (data.getClipData() != null) {
 
+            int totalItemSelected = data.getClipData().getItemCount();
+            for (int i = 0; i < totalItemSelected; i++) {
+                Uri fileuri = data.getClipData().getItemAt(i).getUri();
+                String filename = getFileName(fileuri);
+
+
+
+            }
+            //Toast.makeText(getActivity(), "Selected Multiple Files", Toast.LENGTH_SHORT).show();
+        } else if (data.getData() != null) {
+            Toast.makeText(getActivity(), "Selected Single Image", Toast.LENGTH_SHORT).show();
+           ImageUri = data.getData();
+            imageView.setImageURI(ImageUri);
+        }*/
         }
 
 
@@ -170,16 +186,11 @@ public class upload_fragment extends Fragment {
                         .showCamera(true)
                         .imageDirectory("Camera") // directory name for captured image  ("Camera" folder by default)
                         .start();
-
-
-
-               /*Intent intent = new Intent(getActivity(),Upload_imageAdapter.class);
+               /*Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent)
-
-         */
+                startActivityForResult(intent, PICK_IMAGE_REQUEST);*/
             }
 
         });
@@ -274,6 +285,11 @@ public class upload_fragment extends Fragment {
                                 }
                             });
                             Toast.makeText(getActivity(), "upload sucessfull", Toast.LENGTH_SHORT).show();
+
+                            getActivity().finish();
+                            Intent moveToHome=new Intent(getActivity(),HomePage.class);
+                            moveToHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(moveToHome);
                             Log.d("TEST", taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
 
 
@@ -304,7 +320,29 @@ public class upload_fragment extends Fragment {
 
     }
 
+ /* public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != 1)
+                result = result.substring(cut + 1);
 
+        }
+
+
+        return result;
+    }*/
 
 }
 

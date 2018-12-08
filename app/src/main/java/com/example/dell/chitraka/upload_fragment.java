@@ -236,9 +236,9 @@ public class upload_fragment extends Fragment {
                             fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    Upload upload = new Upload(uri.toString(), description.getText().toString());
+                                    //Upload upload = new Upload(uri.toString(), description.getText().toString());
                                     String uploadId = mDatabaseRef.push().getKey();
-                                    mDatabaseRef.child(uploadId).setValue(upload);
+                                    //mDatabaseRef.child(uploadId).setValue(upload);
                                 }
                             });
                             Toast.makeText(getActivity(), "upload sucessfull", Toast.LENGTH_SHORT).show();

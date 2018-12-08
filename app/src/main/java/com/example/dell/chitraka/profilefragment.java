@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -31,6 +32,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -53,17 +57,22 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
-public class profilefragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class profilefragment extends Fragment {
 
     private static final int REQUEST_CAMERA = 0;
     private static final int SELECT_FILE = 1;
     Uri imageHoldUri = null;
+
+    private  Context context;
+
 
     Button logout;
     Button save;
@@ -75,6 +84,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
 
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
+
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference reference = firebaseDatabase.getReference();
@@ -100,7 +110,6 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         logout=(Button)view.findViewById(R.id.logout);
         save=(Button) view.findViewById(R.id.save);
         welcome=(TextView)view.findViewById(R.id.textViewUserEmail) ;
-
 
 
         mAuth=FirebaseAuth.getInstance();
@@ -201,6 +210,7 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
         });
 
 
+
         return view;
     }
 
@@ -229,30 +239,34 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
 
             mChildStorage.putFile(imageHoldUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot)
                 {
 
-                    final Task<Uri> imageUrl=taskSnapshot.getMetadata().getReference().getDownloadUrl();
 
-                    mUserDatabase.child("Username").setValue(Name);
-                    mUserDatabase.child("Memo").setValue(Memo);
-                    mUserDatabase.child("Address").setValue(Address);
-                    mUserDatabase.child("userid").setValue(mAuth.getCurrentUser().getUid());
-                    //mUserDatabase.child("Imageurl").setValue(imageUrl.toString());
-                   mUserDatabase.child("Imageurl").setValue(profilePicUrl);
-                   mUserDatabase.child("Likecount").setValue(0);
+                              String downloaduri= taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+
+                              mUserDatabase.child("Username").setValue(Name);
+                              mUserDatabase.child("Memo").setValue(Memo);
+                              mUserDatabase.child("Address").setValue(Address);
+                              mUserDatabase.child("userid").setValue(mAuth.getCurrentUser().getUid());
+                              //mUserDatabase.child("Imageurl").setValue(imageUrl.toString());
+                              mUserDatabase.child("Imageurl").setValue(downloaduri);
 
 
-                    progressDialog.dismiss();
 
-                    Toast.makeText(getActivity()," SUCCESSFULLY SAVED",Toast.LENGTH_SHORT).show();
+                              progressDialog.dismiss();
 
-                    getActivity().finish();
-                    Intent moveToHome=new Intent(getActivity(),HomePage.class);
-                    moveToHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(moveToHome);
+                              Toast.makeText(getActivity()," SUCCESSFULLY SAVED",Toast.LENGTH_SHORT).show();
 
-                }
+                              getActivity().finish();
+                              Intent moveToHome=new Intent(getActivity(),HomePage.class);
+                              moveToHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                              startActivity(moveToHome);
+                          }
+
+
+                   // final Task<Uri> imageUrl=taskSnapshot.getMetadata().getReference().getDownloadUrl();
+
             });
 
         }
@@ -355,18 +369,6 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
     }
 
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-    {
-        String text=parent.getItemAtPosition(position).toString();
-        //Toast.makeText(parent.getContext(),text,Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
 
     @Override
     public void onStart() {
@@ -378,8 +380,10 @@ public class profilefragment extends Fragment implements AdapterView.OnItemSelec
                     String url = ds.getValue(String.class);
                     Log.d("TEST",url);
 
-                    Picasso.get()
-                            .load(url)
+
+
+                    Picasso.with(context)
+                            .load(imageHoldUri)
                             .error(R.drawable.disclaimer)
                             .into(userImageProfileView);
                 }

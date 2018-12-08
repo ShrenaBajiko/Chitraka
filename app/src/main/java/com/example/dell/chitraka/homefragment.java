@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -53,9 +54,8 @@ public class homefragment extends Fragment {
         View view = inflater.inflate(R.layout.homefragment, null, false);
 
 
-      /*  likeref=FirebaseDatabase.getInstance().getReference().child("Likes");
-        likeref.keepSynced(true);
-        mAuth=FirebaseAuth.getInstance();*/
+
+
 
         android.support.v7.app.ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle("Chitraka");
@@ -111,19 +111,20 @@ public class homefragment extends Fragment {
    @Override
     public void onStart() {
         super.onStart();
-        FirebaseRecyclerAdapter<Model, ViewHolder> firebaseRecyclerAdapter=
-                new FirebaseRecyclerAdapter<Model, ViewHolder>(Model.class,R.layout.row,ViewHolder.class,mRef) {
+        FirebaseRecyclerAdapter<Upload, ImageAdapter.ImageViewHolder> firebaseRecyclerAdapter=
+                new FirebaseRecyclerAdapter<Upload, ImageAdapter.ImageViewHolder>(Upload.class,R.layout.image_item,ImageAdapter.ImageViewHolder.class,mRef) {
+
                     @Override
-                    protected void populateViewHolder(ViewHolder viewHolder, Model model, int position) {
+                    protected void populateViewHolder(ImageAdapter.ImageViewHolder viewHolder, Upload model, int position) {
+
 
                         final String post_key=getRef(position).getKey();
 
                         viewHolder.setLikeBtn(post_key);
+                        viewHolder.setlikecount(String.valueOf(model.getLikecount()));
 
-                        viewHolder.setlikecount(model.getLikecount());
 
-
-                     viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                     viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                          @Override
                          public void onClick(View v) {
                              Toast.makeText(getActivity(),"Liked",Toast.LENGTH_SHORT).show();

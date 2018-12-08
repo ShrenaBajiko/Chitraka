@@ -73,7 +73,7 @@ public class contest_fragment extends Fragment {
             public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot dataSnapshot) {
                 String message=dataSnapshot.getValue(String.class);
                 url.setText(message);
-                Picasso.get()
+                Picasso.with(getActivity())
                         .load(message)
                         .into(img);
             }

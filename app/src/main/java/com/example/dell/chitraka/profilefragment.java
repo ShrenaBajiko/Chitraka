@@ -387,7 +387,7 @@ public class profilefragment extends Fragment {
 
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                     SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("image", String.valueOf(imageHoldUri));
+                    editor.putString("image", String.valueOf(userImageProfileView));
                     editor.apply();
                 }
 

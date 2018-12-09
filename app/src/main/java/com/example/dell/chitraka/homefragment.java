@@ -8,14 +8,20 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,15 +40,23 @@ public class homefragment extends Fragment {
     private List<Upload> muploads;
     private ProgressBar progressBar;
 
-    private Boolean mProcessLike = false;
-    private DatabaseReference likeref, databaseforlikecount;
+    private Boolean mProcessLike=false;
+    private DatabaseReference likeref,databaseforlikecount;
     private FirebaseAuth mAuth;
+
+
+
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.homefragment, null, false);
+
+
+
+
+
         android.support.v7.app.ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle("Chitraka");
 
@@ -58,13 +72,13 @@ public class homefragment extends Fragment {
         firebaseDatabase = FirebaseDatabase.getInstance();
         mRef = firebaseDatabase.getReference("uploads");
 
-        likeref = FirebaseDatabase.getInstance().getReference().child("Likes");
+        likeref=FirebaseDatabase.getInstance().getReference().child("Likes");
         likeref.keepSynced(true);
-        databaseforlikecount = FirebaseDatabase.getInstance().getReference().child("Likes");
+        databaseforlikecount=FirebaseDatabase.getInstance().getReference().child("Likes");
         databaseforlikecount.keepSynced(true);
-        mAuth = FirebaseAuth.getInstance();
-        mAdapter = new ImageAdapter(getActivity(), new ArrayList<Upload>());
-        mRecyclerView.setAdapter(mAdapter);
+        mAuth=FirebaseAuth.getInstance();
+
+
 
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -75,7 +89,9 @@ public class homefragment extends Fragment {
                     upload.setKey(postSnapshot.getKey());
                     muploads.add(upload);
                 }
-                mAdapter.setData(muploads);
+
+                mAdapter = new ImageAdapter(getActivity(), muploads);
+                mRecyclerView.setAdapter(mAdapter);
                 progressBar.setVisibility(View.INVISIBLE);
             }
 
@@ -87,82 +103,28 @@ public class homefragment extends Fragment {
             }
         });
 
-        mAdapter.setOnRowListener(new ImageAdapter.OnRowListener() {
-
-
-            @Override
-            public void likeButton(final int position) {
-                Toast.makeText(getContext(), "Like", Toast.LENGTH_SHORT).show();
-            }
-
-            public void likecount(int position)
-            {
-                mProcessLike=true;
-
-                databaseforlikecount.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                        if(mProcessLike){
-                            if (dataSnapshot.hasChild(mAuth.getCurrentUser().getUid())) {
-
-                                int likecount=0;
-                                likecount=dataSnapshot.child("likecount").getValue(Integer.class);
-                                databaseforlikecount.child("likecount").setValue(likecount-1);
-
-                                databaseforlikecount.child(mAuth.getCurrentUser().getUid()).removeValue();
-                                mProcessLike = false;
-
-                            } else {
-
-                                int likecount=0;
-                                likecount=dataSnapshot.child("likecount").getValue(Integer.class);
-                                databaseforlikecount.child("likecount").setValue(likecount+1);
-
-
-                                databaseforlikecount.child(mAuth.getCurrentUser().getUid()).setValue("Random");
-                                mProcessLike = false;
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-            }
-
-
-
-        });
-
-
 
         return view;
     }
 
 
-
-  /* public void onStart() {
+   @Override
+    public void onStart() {
         super.onStart();
         FirebaseRecyclerAdapter<Upload, ImageAdapter.ImageViewHolder> firebaseRecyclerAdapter=
                 new FirebaseRecyclerAdapter<Upload, ImageAdapter.ImageViewHolder>(Upload.class,R.layout.image_item,ImageAdapter.ImageViewHolder.class,mRef) {
 
                     @Override
-                    protected void populateViewHolder(ImageAdapter.ImageViewHolder imageViewHolder, Upload upload, int position) {
+                    protected void populateViewHolder(ImageAdapter.ImageViewHolder viewHolder, Upload upload, int position) {
 
 
                         final String post_key=getRef(position).getKey();
 
-                        imageViewHolder.setLikeBtn(post_key);
-                        imageViewHolder.setlikecount(String.valueOf(upload.getLikecount()));
-                        //imageViewHolder.setpersonname(upload.getUsername());
+                        viewHolder.setLikeBtn(post_key);
+                        viewHolder.setlikecount(String.valueOf(upload.getLikecount()));
 
 
-                     imageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                     viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                          @Override
                          public void onClick(View v) {
                              Toast.makeText(getActivity(),"Liked",Toast.LENGTH_SHORT).show();
@@ -172,8 +134,7 @@ public class homefragment extends Fragment {
                      });
 
                         //FOR LIKE
-                        imageViewHolder.mLikebtn.setOnClickListener(
-                                new View.OnClickListener() {
+                        viewHolder.mLikebtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
 
@@ -220,6 +181,6 @@ public class homefragment extends Fragment {
                 };
 
         mRecyclerView.setAdapter(firebaseRecyclerAdapter);
-    }*/
+    }
 
 }

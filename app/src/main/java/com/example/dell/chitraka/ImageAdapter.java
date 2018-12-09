@@ -7,10 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -22,15 +22,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder>{
+public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private Context mContext;
     private List<Upload> mUploads;
+    private Boolean mProcessLike = false;
+    private OnRowListener onRowListener;
 
-
-
-
-
-    public ImageAdapter(Context context,List<Upload>  uploads){
+    public ImageAdapter(Context context, List<Upload> uploads) {
         mContext = context;
         mUploads = uploads;
     }
@@ -43,25 +41,32 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ImageViewHolder imageViewHolder, int i) {
+    public void onBindViewHolder(@NonNull ImageViewHolder imageViewHolder, final int i) {
         Upload uploadCurrent = mUploads.get(i);
         imageViewHolder.details.setText(uploadCurrent.getDet());
-       // imageViewHolder.count.setText(uploadCurrent.getLikecount());
-
-
-        Log.d("TEXT",uploadCurrent.getImageUrl());
+        // imageViewHolder.count.setText(uploadCurrent.getLikecount());
         //uploadCurrent.getImageUrl() give this type of value com.google.android.gms.tasks.zzu@7faef41,
         // this is not image url, please look at the firebase docs. Look at firebase storage docs for image url.. It is returning object value
-     Picasso.with(mContext)
+        Picasso.with(mContext)
                 .load(uploadCurrent.getImageUrl())
                 .placeholder(R.drawable.disclaimer)
                 .fit()
                 .centerInside()
                 .into(imageViewHolder.imageView);
 
-     Picasso.with(mContext)
-             .load(uploadCurrent.getLikebutton())
-             .into(imageViewHolder.mLikebtn);
+        Picasso.with(mContext)
+                .load(uploadCurrent.getLikebutton())
+                .into(imageViewHolder.mLikebtn);
+
+        imageViewHolder.mLikebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onRowListener.likeButton(i);
+                onRowListener.likecount(i);
+
+            }
+        });
+
 
     }
 
@@ -80,7 +85,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         notifyDataSetChanged();
     }
 
-    public class ImageViewHolder extends  RecyclerView.ViewHolder{
+    public class ImageViewHolder extends RecyclerView.ViewHolder {
         public TextView details;
         public ImageView imageView;
         public ImageButton mLikebtn;
@@ -90,40 +95,35 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         FirebaseAuth mAuth;
 
 
-
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
 
             imageView = itemView.findViewById(R.id.image_view_upload);
             details = itemView.findViewById(R.id.detail);
-            mLikebtn= itemView.findViewById(R.id.likebutton);
-            count=itemView.findViewById(R.id.counter);
+            mLikebtn = itemView.findViewById(R.id.likebutton);
+            count = itemView.findViewById(R.id.counter);
 
-            mDatabaseLike=FirebaseDatabase.getInstance().getReference().child("Likes");
-            mAuth=FirebaseAuth.getInstance();
+            mDatabaseLike = FirebaseDatabase.getInstance().getReference().child("Likes");
+            mAuth = FirebaseAuth.getInstance();
             mDatabaseLike.keepSynced(true);
-
         }
 
 
-        public void setlikecount(String likecount)
-        {
-            count=(TextView) itemView.findViewById(R.id.counter);
+
+        public void setlikecount(String likecount) {
+            count = (TextView) itemView.findViewById(R.id.counter);
+
             count.setText(Integer.toString(Integer.parseInt((likecount))));
         }
 
-        public void setLikeBtn(final String post_key)
-        {
+        public void setLikeBtn(final String post_key) {
             mDatabaseLike.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.child(post_key).hasChild(mAuth.getCurrentUser().getUid()))
-                    {
+                    if (dataSnapshot.child(post_key).hasChild(mAuth.getCurrentUser().getUid())) {
                         mLikebtn.setImageResource(R.drawable.red_heart);
 
-                    }
-                    else
-                    {
+                    } else {
                         mLikebtn.setImageResource(R.drawable.cards_heart);
                     }
                 }
@@ -137,6 +137,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     }
 
+    public interface OnRowListener {
+        void likeButton(int i);
+        void likecount(int i);
 
+    }
+
+    public void setOnRowListener(OnRowListener onRowListener) {
+        this.onRowListener = onRowListener;
+    }
 
 }

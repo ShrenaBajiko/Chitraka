@@ -1,6 +1,7 @@
 package com.example.dell.chitraka;
 
 
+import android.net.Uri;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -11,13 +12,14 @@ public class Upload {
         private int Likecount;
         private String Likebutton;
 
+    public Upload() {
+    }
 
 
-        public Upload()
-        {
 
-        }
-        public Upload(String imageUrl,String detail)
+
+
+    public Upload(String imageUrl, String detail)
         {
             if(detail.trim().equals("")){
                 detail = "no description";
@@ -27,6 +29,10 @@ public class Upload {
             this.Likecount=Likecount;
 
         }
+
+    public Upload(String s, String s1, int i) {
+    }
+
 
     public Integer getLikecount() {
         return Likecount;

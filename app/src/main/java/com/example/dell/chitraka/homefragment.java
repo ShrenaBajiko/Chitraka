@@ -52,11 +52,6 @@ public class homefragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.homefragment, null, false);
-
-
-
-
-
         android.support.v7.app.ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle("Chitraka");
 
@@ -85,7 +80,7 @@ public class homefragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 muploads.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Upload upload = postSnapshot.getValue(Upload.class);
+                  Upload upload = postSnapshot.getValue(Upload.class);
                     upload.setKey(postSnapshot.getKey());
                     muploads.add(upload);
                 }

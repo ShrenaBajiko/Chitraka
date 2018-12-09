@@ -3,11 +3,13 @@ package com.example.dell.chitraka;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -49,16 +52,14 @@ import static android.app.Activity.RESULT_OK;
 public class upload_fragment extends Fragment {
     private static final int RequestPermissionCode = 1189;
     private static final int PICK_IMAGE_REQUEST = 1;
-    private static final int REQUEST_CODE = 0;
-    private static final int KEY_SELECTED_PHOTOS = 100;
     private static final int CAN_REQUEST = 1313;
-    private static final int RESULT_OK = 0 ;
     TextView imagePicker;
     ImageView imageView;
     private Uri ImageUri;
     private TextView buttonUpload;
     private ProgressBar progressBar;
     private EditText description;
+    ImageView imgview;
 
 
     private StorageReference mStorageRef;
@@ -66,7 +67,7 @@ public class upload_fragment extends Fragment {
     private StorageTask mUploadTask;
 
     ArrayList<String> filePaths = new ArrayList<>();
-    //GridView gv;
+    GridView gv;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -78,14 +79,11 @@ public class upload_fragment extends Fragment {
         progressBar = view.findViewById(R.id.progress_bar);
         buttonUpload = view.findViewById(R.id.upload_image);
         description = view.findViewById(R.id.description);
+        gv = view.findViewById(R.id.gv);
+        imgview =view.findViewById((R.id.imgview));
 
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
-      //  gv = (GridView) view.findViewById(R.id.gv);
-
-
-
-
 
         buttonUpload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,33 +119,32 @@ public class upload_fragment extends Fragment {
 
 
 
-        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+       /*if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
             // Get a list of picked images
             List<Image> images = ImagePicker.getImages(data);
             for (Image image : images) {
                 Log.d("TEST", image.getPath());
                 Log.d("TEST", image.getName());
                 ImageUri = data.getData();
-                imageView.setImageURI(ImageUri);
+                imgview.setImageURI(ImageUri);
             }
-        }
-        /*if (data.getClipData() != null) {
+        }*/
+        if (data.getClipData() != null) {
 
             int totalItemSelected = data.getClipData().getItemCount();
             for (int i = 0; i < totalItemSelected; i++) {
                 Uri fileuri = data.getClipData().getItemAt(i).getUri();
-                String filename = getFileName(fileuri);
-
+                //String filename = getFileName(fileuri);
 
 
             }
             //Toast.makeText(getActivity(), "Selected Multiple Files", Toast.LENGTH_SHORT).show();
         } else if (data.getData() != null) {
             Toast.makeText(getActivity(), "Selected Single Image", Toast.LENGTH_SHORT).show();
-           ImageUri = data.getData();
+            ImageUri = data.getData();
             imageView.setImageURI(ImageUri);
-        }*/
         }
+    }
 
 
     private void showPhotoAlertDialog() {
@@ -187,7 +184,7 @@ public class upload_fragment extends Fragment {
                         .imageDirectory("Camera") // directory name for captured image  ("Camera" folder by default)
                         .start();
                /*Intent intent = new Intent();
-                intent.setType("image/*");
+               intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent, PICK_IMAGE_REQUEST);*/
@@ -250,7 +247,7 @@ public class upload_fragment extends Fragment {
     private void openCamera() {
         //Use Intent to open camera.
 
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, CAN_REQUEST);
         Toast.makeText(getContext(), "Open Camera", Toast.LENGTH_LONG).show();
     }
@@ -269,6 +266,7 @@ public class upload_fragment extends Fragment {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -279,7 +277,7 @@ public class upload_fragment extends Fragment {
                             fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    Upload upload = new Upload(uri.toString(), description.getText().toString());
+                                    Upload upload = new Upload(uri.toString(), description.getText().toString(),0);
                                     String uploadId = mDatabaseRef.push().getKey();
                                     mDatabaseRef.child(uploadId).setValue(upload);
                                 }
@@ -320,7 +318,7 @@ public class upload_fragment extends Fragment {
 
     }
 
- /* public String getFileName(Uri uri) {
+  /*  public String getFileName(Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {
             Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);

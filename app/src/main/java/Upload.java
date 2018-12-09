@@ -2,6 +2,10 @@
 public class Upload {
     private String ImageUrl;
     private String Det;
+    private String mKey;
+    private int Likecount;
+    private String Likebutton;
+
 
     public Upload()
     {
@@ -15,6 +19,21 @@ public class Upload {
         ImageUrl = imageUrl;
         Det = detail;
 
+    }
+    public Integer getLikecount() {
+        return Likecount;
+    }
+
+    public void setLikecount(int Likecount) {
+        this.Likecount = Likecount;
+    }
+
+    public String getLikebutton() {
+        return Likebutton;
+    }
+
+    public void setLikebutton(String likebutton) {
+        Likebutton = likebutton;
     }
 
     public String getImageUrl() {

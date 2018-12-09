@@ -46,15 +46,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
        // imageViewHolder.count.setText(uploadCurrent.getLikecount());
 
 
-        Log.d("TEXT",uploadCurrent.getImageUrl());
+//        Log.d("TEXT",uploadCurrent.getImageUrl().toString());
         //uploadCurrent.getImageUrl() give this type of value com.google.android.gms.tasks.zzu@7faef41,
         // this is not image url, please look at the firebase docs. Look at firebase storage docs for image url.. It is returning object value
      Picasso.with(mContext)
                 .load(uploadCurrent.getImageUrl())
                 .placeholder(R.mipmap.ic_launcher)
                 .fit()
-                .centerInside()
-                .into(imageViewHolder.imageView);
+                .centerInside();
+                //.into(imageViewHolder.imageView);
 
      Picasso.with(mContext)
              .load(uploadCurrent.getLikebutton())

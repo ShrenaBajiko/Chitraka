@@ -1,6 +1,7 @@
 package com.example.dell.chitraka;
 
 
+import android.net.Uri;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -14,20 +15,22 @@ public class Upload {
 
     public Upload(String s, String s1, int i) {
     }
+    public Upload() {
+    }
+
+    public Upload(String s, String test) {
+    }
 
     public String getUsername() {
         return Username;
     }
 
-    public void setUsername(String username) {
-        Username = username;
+    public void setUsername(String name) {
+        Username = name;
     }
 
-    public Upload()
-        {
 
 
-        }
 
         public Upload(String imageUrl,String detail,int Likecount,String username)
         {
@@ -39,6 +42,7 @@ public class Upload {
             this.Likecount=Likecount;
             Username=username;
         }
+
 
     public Integer getLikecount() {
         return Likecount;
@@ -56,7 +60,7 @@ public class Upload {
         Likebutton = likebutton;
     }
 
-    public String getImageUrl() {
+        public String getImageUrl() {
             return ImageUrl;
         }
 

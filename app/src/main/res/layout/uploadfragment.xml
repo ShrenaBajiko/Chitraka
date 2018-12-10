@@ -18,7 +18,12 @@
         android:textAlignment="center"
         android:textSize="@dimen/_16sdp" />
 
-    <ImageView
+
+
+
+
+        <ImageView
+
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,6 +31,7 @@
 
         android:layout_marginBottom="60dp"
         android:layout_marginTop="70dp" />
+
 
     <EditText
         android:id="@+id/description"
@@ -58,6 +64,10 @@
         android:text="Upload Image"
         android:textAlignment="center"
         android:textSize="@dimen/_16sdp" />
+
+
+
+
 
 
 

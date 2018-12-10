@@ -36,16 +36,18 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @NonNull
     @Override
     public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.image_item, viewGroup, false);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.image_item,viewGroup,false);
         return new ImageViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ImageViewHolder imageViewHolder, int i) {
+    public void onBindViewHolder(ImageViewHolder imageViewHolder, int i) {
         Upload uploadCurrent = mUploads.get(i);
         imageViewHolder.details.setText(uploadCurrent.getDet());
        // imageViewHolder.count.setText(uploadCurrent.getLikecount());
 
+
+//        Log.d("TEXT",uploadCurrent.getImageUrl().toString());
         //Log.d("TEXT",uploadCurrent.getImageUrl());
         //uploadCurrent.getImageUrl() give this type of value com.google.android.gms.tasks.zzu@7faef41,
         // this is not image url, please look at the firebase docs. Look at firebase storage docs for image url.. It is returning object value
@@ -82,6 +84,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         public ImageView imageView;
         public ImageButton mLikebtn;
         public TextView count;
+        public TextView personname;
+
 
         DatabaseReference mDatabaseLike;
         FirebaseAuth mAuth;
@@ -95,11 +99,17 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             details = itemView.findViewById(R.id.detail);
             mLikebtn= itemView.findViewById(R.id.likebutton);
             count=itemView.findViewById(R.id.counter);
+            personname=itemView.findViewById(R.id.personusername);
 
             mDatabaseLike=FirebaseDatabase.getInstance().getReference().child("Likes");
             mAuth=FirebaseAuth.getInstance();
             mDatabaseLike.keepSynced(true);
 
+        }
+        public  void setpersonname(String name)
+        {
+            personname=(TextView) itemView.findViewById(R.id.personusername);
+            personname.setText(name);
         }
 
 

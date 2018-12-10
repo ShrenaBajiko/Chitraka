@@ -10,7 +10,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/username"
+            android:id="@+id/personusername"
             android:layout_width="103dp"
             android:layout_height="37dp"
             android:hint="Username"

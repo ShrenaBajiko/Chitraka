@@ -71,6 +71,7 @@ public class homefragment extends Fragment {
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         mRef = firebaseDatabase.getReference("uploads");
+        mRef=firebaseDatabase.getReference("Users");
 
         likeref=FirebaseDatabase.getInstance().getReference().child("Likes");
         likeref.keepSynced(true);
@@ -85,7 +86,7 @@ public class homefragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 muploads.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Upload upload = postSnapshot.getValue(Upload.class);
+                  Upload upload = postSnapshot.getValue(Upload.class);
                     upload.setKey(postSnapshot.getKey());
                     muploads.add(upload);
                 }
@@ -109,19 +110,21 @@ public class homefragment extends Fragment {
 
 
    @Override
+   //For LIKECOUNTS
     public void onStart() {
         super.onStart();
         FirebaseRecyclerAdapter<Upload, ImageAdapter.ImageViewHolder> firebaseRecyclerAdapter=
                 new FirebaseRecyclerAdapter<Upload, ImageAdapter.ImageViewHolder>(Upload.class,R.layout.image_item,ImageAdapter.ImageViewHolder.class,mRef) {
 
                     @Override
-                    protected void populateViewHolder(ImageAdapter.ImageViewHolder viewHolder, Upload upload, int position) {
+                    protected void populateViewHolder(ImageAdapter.ImageViewHolder viewHolder, Upload model, int position) {
 
 
                         final String post_key=getRef(position).getKey();
 
                         viewHolder.setLikeBtn(post_key);
-                        viewHolder.setlikecount(String.valueOf(upload.getLikecount()));
+                        viewHolder.setlikecount(String.valueOf(model.getLikecount()));
+                        viewHolder.setpersonname(model.getUsername());
 
 
                      viewHolder.itemView.setOnClickListener(new View.OnClickListener() {

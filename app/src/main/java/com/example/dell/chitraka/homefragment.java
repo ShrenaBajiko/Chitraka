@@ -61,7 +61,6 @@ public class homefragment extends Fragment {
 
         muploads = new ArrayList<>();
 
-
         firebaseDatabase = FirebaseDatabase.getInstance();
         mRef = firebaseDatabase.getReference("uploads");
 
@@ -105,17 +104,18 @@ public class homefragment extends Fragment {
                 new FirebaseRecyclerAdapter<Upload, ImageAdapter.ImageViewHolder>(Upload.class, R.layout.image_item, ImageAdapter.ImageViewHolder.class, mRef) {
 
                     @Override
-                    protected void populateViewHolder(ImageAdapter.ImageViewHolder imageViewHolder, Upload model, int position) {
+                    protected void populateViewHolder(ImageAdapter.ImageViewHolder viewHolder, Upload model, int position) {
 
 
                         final String post_key = getRef(position).getKey();
 
-                        imageViewHolder.setLikeBtn(post_key);
-                        imageViewHolder.setlikecount(String.valueOf(model.getLikecount()));
-                        imageViewHolder.setpersonname(model.getUsername());
+                        viewHolder.setLikeBtn(post_key);
+                        viewHolder.setlikecount(String.valueOf(model.getLikecount()));
+                        viewHolder.setpersonname(model.getUsername());
 
 
-                        imageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+
+                        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Toast.makeText(getActivity(), "Liked", Toast.LENGTH_SHORT).show();
@@ -125,7 +125,7 @@ public class homefragment extends Fragment {
                         });
 
                         //FOR LIKE
-                        imageViewHolder.mLikebtn.setOnClickListener(
+                        viewHolder.mLikebtn.setOnClickListener(
                                 new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {

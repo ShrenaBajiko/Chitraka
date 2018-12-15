@@ -104,28 +104,26 @@ public class homefragment extends Fragment {
                 new FirebaseRecyclerAdapter<Upload, ImageAdapter.ImageViewHolder>(Upload.class, R.layout.image_item, ImageAdapter.ImageViewHolder.class, mRef) {
 
                     @Override
-                    protected void populateViewHolder(ImageAdapter.ImageViewHolder viewHolder, Upload model, int position) {
+                    protected void populateViewHolder(ImageAdapter.ImageViewHolder imageviewHolder, Upload model, int position) {
 
 
                         final String post_key = getRef(position).getKey();
 
-                        viewHolder.setLikeBtn(post_key);
-                        viewHolder.setlikecount(String.valueOf(model.getLikecount()));
-                        viewHolder.setpersonname(model.getUsername());
+                        imageviewHolder.setLikeBtn(post_key);
+                        imageviewHolder.setlikecount(String.valueOf(model.getLikecount()));
+                        imageviewHolder.setpersonname(model.getUsername());
 
 
 
-                        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        imageviewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Toast.makeText(getActivity(), "Liked", Toast.LENGTH_SHORT).show();
-
-
-                            }
+                                }
                         });
 
                         //FOR LIKE
-                        viewHolder.mLikebtn.setOnClickListener(
+                        imageviewHolder.mLikebtn.setOnClickListener(
                                 new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {

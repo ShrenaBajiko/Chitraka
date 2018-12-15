@@ -40,6 +40,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +81,7 @@ public class upload_fragment extends Fragment {
         buttonUpload = view.findViewById(R.id.upload_image);
         description = view.findViewById(R.id.description);
         gv = view.findViewById(R.id.gv);
-        imgview =view.findViewById((R.id.imgview));
+        imgview = view.findViewById((R.id.imgview));
 
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
@@ -116,10 +117,11 @@ public class upload_fragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
             ;
+        ImageUri = data.getData();
+        Picasso.with(getActivity()).load(ImageUri).into(imageView);
 
 
-
-       /*if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+       /* if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
             // Get a list of picked images
             List<Image> images = ImagePicker.getImages(data);
             for (Image image : images) {
@@ -128,22 +130,22 @@ public class upload_fragment extends Fragment {
                 ImageUri = data.getData();
                 imgview.setImageURI(ImageUri);
             }
-        }*/
-        if (data.getClipData() != null) {
+        }
+       /* if (data.getClipData() != null) {
 
             int totalItemSelected = data.getClipData().getItemCount();
             for (int i = 0; i < totalItemSelected; i++) {
                 Uri fileuri = data.getClipData().getItemAt(i).getUri();
-                //String filename = getFileName(fileuri);
+                String filename = getFileName(fileuri);
 
 
             }
-            //Toast.makeText(getActivity(), "Selected Multiple Files", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Selected Multiple Files", Toast.LENGTH_SHORT).show();
         } else if (data.getData() != null) {
             Toast.makeText(getActivity(), "Selected Single Image", Toast.LENGTH_SHORT).show();
             ImageUri = data.getData();
             imageView.setImageURI(ImageUri);
-        }
+        }*/
     }
 
 
@@ -173,7 +175,8 @@ public class upload_fragment extends Fragment {
         URL: https://github.com/esafirm/android-image-picker
          */
                 //CHOOSE IMAGE FROM GALLERY
-                ImagePicker.create(getActivity())
+
+               /*ImagePicker.create(getActivity())
                         .toolbarFolderTitle("Folder") // folder selection title
                         .toolbarImageTitle("Tap to select") // image selection title
                         .toolbarArrowColor(Color.WHITE) // Toolbar 'up' arrow color
@@ -182,12 +185,13 @@ public class upload_fragment extends Fragment {
                         .limit(5) // max images can be selected (99 by default)
                         .showCamera(true)
                         .imageDirectory("Camera") // directory name for captured image  ("Camera" folder by default)
-                        .start();
-               /*Intent intent = new Intent();
+                        .start();*/
+              Intent intent = new Intent();
                intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                //intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, PICK_IMAGE_REQUEST);*/
+                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+
             }
 
         });
@@ -252,7 +256,7 @@ public class upload_fragment extends Fragment {
         Toast.makeText(getContext(), "Open Camera", Toast.LENGTH_LONG).show();
     }
 
-
+//to get extension for our file
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getActivity().getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
@@ -265,8 +269,9 @@ public class upload_fragment extends Fragment {
             fileReference.putFile(ImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
 
+//delay reset of progress for 5 sec
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -277,15 +282,16 @@ public class upload_fragment extends Fragment {
                             fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    Upload upload = new Upload(uri.toString(), description.getText().toString(),0);
+                                   Upload upload = new Upload(uri.toString().trim(), description.getText().toString().trim());
                                     String uploadId = mDatabaseRef.push().getKey();
                                     mDatabaseRef.child(uploadId).setValue(upload);
+
                                 }
                             });
-                            Toast.makeText(getActivity(), "upload sucessfull", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "upload sucessfull", Toast.LENGTH_LONG).show();
 
                             getActivity().finish();
-                            Intent moveToHome=new Intent(getActivity(),HomePage.class);
+                            Intent moveToHome = new Intent(getActivity(), HomePage.class);
                             moveToHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(moveToHome);
                             Log.d("TEST", taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
@@ -317,8 +323,9 @@ public class upload_fragment extends Fragment {
         }
 
     }
+}
 
-  /*  public String getFileName(Uri uri) {
+  /* public String getFileName(Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {
             Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
@@ -340,9 +347,9 @@ public class upload_fragment extends Fragment {
 
 
         return result;
-    }*/
+    }
 
-}
+}*/
 
 
 

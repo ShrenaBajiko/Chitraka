@@ -9,7 +9,7 @@ public class Upload {
         private String ImageUrl;
         private String Det;
         private String mKey;
-        private int Likecount;
+         int likecount;
         private String Likebutton;
         private String Username;
 
@@ -32,24 +32,25 @@ public class Upload {
 
 
 
-        public Upload(String imageUrl,String detail,int Likecount,String username)
+        public Upload(String imageUrl,String detail,int likecount,String username, String mkey)
         {
             if(detail.trim().equals("")){
                 detail = "no description";
             }
             ImageUrl = imageUrl;
             Det = detail;
-            this.Likecount=Likecount;
+            this.likecount=likecount;
             Username=username;
+            mKey=mkey;
         }
 
 
     public Integer getLikecount() {
-        return Likecount;
+        return likecount;
     }
 
-    public void setLikecount(int Likecount) {
-        this.Likecount = Likecount;
+    public void setLikecount(int likecount) {
+        this.likecount = likecount;
     }
 
     public String getLikebutton() {

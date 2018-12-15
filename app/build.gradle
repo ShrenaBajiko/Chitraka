@@ -51,6 +51,7 @@ dependencies {
     // for experimental rx pickerd
     implementation 'com.github.esafirm.android-image-picker:rximagepicker:1.13.1'
     implementation 'com.android.support:multidex:1.0.3'
+    implementation'com.github.jd-alexander:LikeButton:0.2.3'
 
 
 

@@ -378,8 +378,6 @@ public class profilefragment extends Fragment {
                     String url = ds.getValue(String.class);
                     Log.d("TEST",url);
 
-
-
                     Picasso.with(getActivity())
                             .load(imageHoldUri)
                             .error(R.drawable.disclaimer)
@@ -387,7 +385,7 @@ public class profilefragment extends Fragment {
 
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                     SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("image", String.valueOf(imageHoldUri));
+                    editor.putString("image", String.valueOf(userImageProfileView));
                     editor.apply();
                 }
 

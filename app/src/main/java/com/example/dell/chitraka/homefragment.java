@@ -8,25 +8,20 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,15 +40,18 @@ public class homefragment extends Fragment {
     private FirebaseAuth mAuth;
 
 
-
+    private ImageView likebutton;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.homefragment, null, false);
+
+
         android.support.v7.app.ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle("Chitraka");
+
 
         mRecyclerView = view.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
@@ -62,7 +60,6 @@ public class homefragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         muploads = new ArrayList<>();
-
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         mRef = firebaseDatabase.getReference("uploads");
@@ -73,14 +70,12 @@ public class homefragment extends Fragment {
         databaseforlikecount.keepSynced(true);
         mAuth=FirebaseAuth.getInstance();
 
-
-
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 muploads.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                  Upload upload = postSnapshot.getValue(Upload.class);
+                    Upload upload = postSnapshot.getValue(Upload.class);
                     upload.setKey(postSnapshot.getKey());
                     muploads.add(upload);
                 }
@@ -103,79 +98,83 @@ public class homefragment extends Fragment {
     }
 
 
-
     public void onStart() {
         super.onStart();
-        FirebaseRecyclerAdapter<Upload, ImageAdapter.ImageViewHolder> firebaseRecyclerAdapter=
-                new FirebaseRecyclerAdapter<Upload, ImageAdapter.ImageViewHolder>(Upload.class,R.layout.image_item,ImageAdapter.ImageViewHolder.class,mRef) {
+        FirebaseRecyclerAdapter<Upload, ImageAdapter.ImageViewHolder> firebaseRecyclerAdapter =
+                new FirebaseRecyclerAdapter<Upload, ImageAdapter.ImageViewHolder>(Upload.class, R.layout.image_item, ImageAdapter.ImageViewHolder.class, mRef) {
 
                     @Override
                     protected void populateViewHolder(ImageAdapter.ImageViewHolder viewHolder, Upload model, int position) {
 
 
-                        final String post_key=getRef(position).getKey();
+                        final String post_key = getRef(position).getKey();
 
                         viewHolder.setLikeBtn(post_key);
                         viewHolder.setlikecount(String.valueOf(model.getLikecount()));
+                        viewHolder.setpersonname(model.getUsername());
 
 
-                     viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                         @Override
-                         public void onClick(View v) {
-                             Toast.makeText(getActivity(),"Liked",Toast.LENGTH_SHORT).show();
 
-
-                         }
-                     });
-
-                        //FOR LIKE
-                        viewHolder.mLikebtn.setOnClickListener(new View.OnClickListener() {
+                        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
-                                mProcessLike=true;
-
-                                    databaseforlikecount.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                            if(mProcessLike){
-                                                if (dataSnapshot.child(post_key).hasChild(mAuth.getCurrentUser().getUid())) {
-
-                                                    int likecount=0;
-                                                    likecount=dataSnapshot.child(post_key).child("likecount").getValue(Integer.class);
-                                                    databaseforlikecount.child(post_key).child("likecount").setValue(likecount-1);
-
-                                                    databaseforlikecount.child(post_key).child(mAuth.getCurrentUser().getUid()).removeValue();
-                                                    mProcessLike = false;
-
-                                                } else {
-
-                                                    int likecount=0;
-                                                    likecount=dataSnapshot.child(post_key).child("likecount").getValue(Integer.class);
-                                                   databaseforlikecount.child(post_key).child("likecount").setValue(likecount+1);
+                                Toast.makeText(getActivity(), "Liked", Toast.LENGTH_SHORT).show();
 
 
-                                                    databaseforlikecount.child(post_key).child(mAuth.getCurrentUser().getUid()).setValue("Random");
-                                                    mProcessLike = false;
+                            }
+                        });
+
+                        //FOR LIKE
+                        viewHolder.mLikebtn.setOnClickListener(
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        mProcessLike = true;
+
+                                        databaseforlikecount.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                                if (mProcessLike) {
+                                                    if (dataSnapshot.child(post_key).hasChild(mAuth.getCurrentUser().getUid())) {
+
+                                                        int likecount = 0;
+                                                        likecount = dataSnapshot.child(post_key).child("likecount").getValue(Integer.class);
+                                                        databaseforlikecount.child(post_key).child("likecount").setValue(likecount - 1);
+
+                                                        databaseforlikecount.child(post_key).child(mAuth.getCurrentUser().getUid()).removeValue();
+                                                        mProcessLike = false;
+
+                                                    } else {
+
+                                                        int likecount = 0;
+                                                        likecount = dataSnapshot.child(post_key).child("likecount").getValue(Integer.class);
+                                                        databaseforlikecount.child(post_key).child("likecount").setValue(likecount + 1);
+
+
+                                                        databaseforlikecount.child(post_key).child(mAuth.getCurrentUser().getUid()).setValue("Random");
+                                                        mProcessLike = false;
+                                                    }
                                                 }
+
                                             }
 
-                                        }
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            }
+                                        });
+                                    }
 
-                                        }
-                                    });
-                                }
-
-                        });
+                                });
 
                     }
                 };
 
         mRecyclerView.setAdapter(firebaseRecyclerAdapter);
     }
+    }
 
-}
+
+

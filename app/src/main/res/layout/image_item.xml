@@ -10,7 +10,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/username"
+            android:id="@+id/personusername"
             android:layout_width="103dp"
             android:layout_height="37dp"
             android:hint="Username"
@@ -18,11 +18,12 @@
 
         <ImageView
             android:id="@+id/image_view_upload"
-            android:layout_width="match_parent"
-            android:layout_height="291dp"
+            android:layout_width="358dp"
+            android:layout_height="300dp"
             android:layout_alignParentTop="true"
             android:layout_marginTop="40dp"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            />
 
         <TextView
             android:id="@+id/detail"

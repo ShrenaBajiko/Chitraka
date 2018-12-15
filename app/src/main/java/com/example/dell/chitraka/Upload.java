@@ -11,15 +11,28 @@ public class Upload {
         private String mKey;
         private int Likecount;
         private String Likebutton;
+        private String Username;
 
+    public Upload(String s, String s1, int i) {
+    }
     public Upload() {
+    }
+
+    public Upload(String s, String test) {
+    }
+
+    public String getUsername() {
+        return Username;
+    }
+
+    public void setUsername(String name) {
+        Username = name;
     }
 
 
 
 
-
-    public Upload(String imageUrl, String detail)
+        public Upload(String imageUrl,String detail,int Likecount,String username)
         {
             if(detail.trim().equals("")){
                 detail = "no description";
@@ -27,11 +40,8 @@ public class Upload {
             ImageUrl = imageUrl;
             Det = detail;
             this.Likecount=Likecount;
-
+            Username=username;
         }
-
-    public Upload(String s, String s1, int i) {
-    }
 
 
     public Integer getLikecount() {
